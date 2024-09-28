@@ -15,55 +15,54 @@ class MoveSystem extends System {
 
 	override function update(_dt:Float) {
 		iterate(movables, {
-			pos.x += vel.x * _dt;
-			pos.y += vel.y * _dt;
+			pos.x += vel.vector.x * _dt;
+			pos.y += vel.vector.y * _dt;
 		});
 
 		setup(playerMovables, {
 			iterate(playerMovables, {
 				if (inputCapture.getActionStatus(GameAction.MoveUp))
-					vel.y -= playerControlled.acceleration * _dt;
+					vel.vector.y -= playerControlled.acceleration * _dt;
 				else if (inputCapture.getActionStatus(GameAction.MoveDown))
-					vel.y += playerControlled.acceleration * _dt;
-				else if (vel.y != 0) {
-					vel.y -= playerControlled.deceleration * _dt;
-					if (Math.abs(vel.y) < playerControlled.deceleration)
-						vel.y = 0;
+					vel.vector.y += playerControlled.acceleration * _dt;
+				else if (vel.vector.y != 0) {
+					vel.vector.y -= playerControlled.deceleration * _dt;
+					if (Math.abs(vel.vector.y) < playerControlled.deceleration)
+						vel.vector.y = 0;
 				}
 				if (inputCapture.getActionStatus(GameAction.MoveLeft))
-					vel.x -= playerControlled.acceleration * _dt;
+					vel.vector.x -= playerControlled.acceleration * _dt;
 				else if (inputCapture.getActionStatus(GameAction.MoveRight))
-					vel.x += playerControlled.acceleration * _dt;
-				else if (vel.x != 0) {
-					vel.x -= playerControlled.deceleration * _dt;
-					if (Math.abs(vel.x) < playerControlled.deceleration)
-						vel.x = 0;
+					vel.vector.x += playerControlled.acceleration * _dt;
+				else if (vel.vector.x != 0) {
+					vel.vector.x -= playerControlled.deceleration * _dt;
+					if (Math.abs(vel.vector.x) < playerControlled.deceleration)
+						vel.vector.x = 0;
 				}
 
 				// Cap velocity to max speed grid-wise
-				if(Math.abs(vel.x) > playerControlled.maxSpeed)
-					vel.x = playerControlled.maxSpeed * Math.abs(vel.x) / vel.x; 
-				if(Math.abs(vel.y) > playerControlled.maxSpeed)
-					vel.y = playerControlled.maxSpeed * Math.abs(vel.y) / vel.y; 
+				if(Math.abs(vel.vector.x) > playerControlled.maxSpeed)
+					vel.vector.x = playerControlled.maxSpeed * Math.abs(vel.vector.x) / vel.vector.x; 
+				if(Math.abs(vel.vector.y) > playerControlled.maxSpeed)
+					vel.vector.y = playerControlled.maxSpeed * Math.abs(vel.vector.y) / vel.vector.y; 
 				
 
 				// Cap velocity to max speed
-				if (vel.x * vel.x + vel.y * vel.y > playerControlled.maxSpeed * playerControlled.maxSpeed) {
-					trace(vel.x + " : " + vel.y);
-					var velX = vel.x;
-					var velY = vel.y;
+				if (vel.vector.x * vel.vector.x + vel.vector.y * vel.vector.y > playerControlled.maxSpeed * playerControlled.maxSpeed) {
+					var velX = vel.vector.x;
+					var velY = vel.vector.y;
 
-					if (vel.x != 0)
-						velX = vel.x / ((Math.abs(vel.x) + Math.abs(vel.y)) / playerControlled.maxSpeed);
-					if (vel.y != 0)
-						velY = vel.y / ((Math.abs(vel.x) + Math.abs(vel.y)) / playerControlled.maxSpeed);
+					if (vel.vector.x != 0)
+						velX = vel.vector.x / ((Math.abs(vel.vector.x) + Math.abs(vel.vector.y)) / playerControlled.maxSpeed);
+					if (vel.vector.y != 0)
+						velY = vel.vector.y / ((Math.abs(vel.vector.x) + Math.abs(vel.vector.y)) / playerControlled.maxSpeed);
 					
-					 if(vel.x == 0 && velX != 0)
-						vel.x = playerControlled.initialImpulse * playerControlled.maxSpeed * Math.abs(velX) / velX;
-					 if(vel.y == 0 && velY != 0)
-						vel.y = playerControlled.initialImpulse * playerControlled.maxSpeed * Math.abs(velY) / velY;
-					vel.x = velX;
-					vel.y = velY;
+					 if(vel.vector.x == 0 && velX != 0)
+						vel.vector.x = playerControlled.initialImpulse * playerControlled.maxSpeed * Math.abs(velX) / velX;
+					 if(vel.vector.y == 0 && velY != 0)
+						vel.vector.y = playerControlled.initialImpulse * playerControlled.maxSpeed * Math.abs(velY) / velY;
+					vel.vector.x = velX;
+					vel.vector.y = velY;
 				}
 			});
 		});

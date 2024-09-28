@@ -10,6 +10,11 @@ import components.Collidable;
 import components.Collided;
 import components.Position;
 
+typedef ColliderData = {
+	var entity:Entity;
+	var effects:Array<PendingEffect>;
+}
+
 // System that determines collisions between entities with a Collidable component on them
 class CollisionDetectionSystem extends System {
 	@:fastFamily var collidables:{pos:Position, collider:Collidable};
@@ -26,7 +31,8 @@ class CollisionDetectionSystem extends System {
 		iterate(collidables, entity -> {
 			if (!collisionMap.exists(collider.collisionGroup))
 				collisionMap.set(collider.collisionGroup, new Array<Shape>());
-			collider.shape.data = entity;
+			var colliderData:ColliderData = {entity:entity,effects:collider.collisionEffects};
+			collider.shape.data = colliderData;
 			collisionMap.get(collider.collisionGroup).push(collider.shape);
 		});
 
@@ -36,10 +42,19 @@ class CollisionDetectionSystem extends System {
 					var res:Results<ShapeCollision> = Collision.shapeWithShapes(collider.shape, collisionMap.get(collisionChecks));
 					if (res.length != 0) {
 						for (x in res.iterator()) {
-							var ent:Entity = x.shape1.data;
-							var ent2:Entity = x.shape2.data;
-							universe.setComponents(ent, new Collided(ent2));
-							universe.setComponents(ent2, new Collided(ent));
+							var colliderData1:ColliderData = x.shape1.data;
+							var colliderData2:ColliderData = x.shape2.data;
+							
+							universe.setComponents(colliderData1.entity, new Collided(colliderData2.entity));
+							universe.setComponents(colliderData2.entity, new Collided(colliderData1.entity));
+
+							for(effect in colliderData1.effects){
+								universe.setComponents(colliderData2.entity, effect);
+							}
+
+							for(effect in colliderData2.effects){
+								universe.setComponents(colliderData1.entity, effect);
+							}
 						}
 					}
 				}

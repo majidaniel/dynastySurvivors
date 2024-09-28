@@ -7,6 +7,15 @@ enum abstract GameAction(Int) to Int {
 
 enum abstract CollisionGroup(Int) to Int {
 	var Player;
-	var Obstacles;
-	var FinishSpot;
+	var Enemy;
+	var PlayerBullet;
+}
+
+enum abstract PlayerSeekingType(Int) to Int{
+	var Linear;
+}
+
+enum abstract ColissionEffectType(Int) to Int{
+	var Damage;
+	var FullConsume;
 }

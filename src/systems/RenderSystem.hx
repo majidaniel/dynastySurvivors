@@ -21,4 +21,15 @@ class RenderSystem extends System {
 			});
 		});
 	}
+
+	override function onEnabled() {
+		super.onEnabled();
+		renderables.onEntityRemoved.subscribe(entity ->{
+			setup(renderables,{
+				fetch(renderables,entity, {
+					displayResources.scene.removeChild(sprite.graphics);
+				});
+			});
+		});
+	}
 }

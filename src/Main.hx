@@ -22,7 +22,7 @@ class Main extends hxd.App {
 			phases: [
 				{
 					name: 'game-logic',
-					systems: [GameSystem, MoveSystem, CollisionDetectionSystem, CollisionResolutionSystem]
+					systems: [GameSystem, EnemyDecisionSystem, MoveSystem, CollisionDetectionSystem, CollisionResolutionSystem]
 				},
 				{
 					name: 'rendering',

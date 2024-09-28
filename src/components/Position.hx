@@ -1,13 +1,30 @@
 package components;
 
-//Basic x,y coordinates that an entity is currently at
+// Basic x,y coordinates that an entity is currently at
 class Position {
-	public var x:Float;
+	public var vector:Vector;
 
-	public var y:Float;
+	public function new(x:Float = 0, y:Float = 0) {
+		this.vector = new Vector(x, y);
+	}
 
-	public function new(x = 0, y = 0) {
-		this.x = x;
-		this.y = y;
+	public var x(get, set):Float;
+
+	function get_x() {
+		return vector.x;
+	}
+
+	function set_x(x) {
+		return this.vector.x = x;
+	}
+
+	public var y(get, set):Float;
+
+	function get_y() {
+		return vector.y;
+	}
+
+	function set_y(y) {
+		return this.vector.y = y;
 	}
 }
