@@ -2,6 +2,8 @@ import Types.GameAction;
 import Types.CollisionGroup;
 import Types.PlayerSeekingType;
 import Types.ColissionEffectType;
+import Types.BulletType;
+import Types.BulletTargetingPriority;
 import Constants.*;
 import components.*;
 import resources.*;

@@ -19,3 +19,11 @@ enum abstract ColissionEffectType(Int) to Int{
 	var Damage;
 	var FullConsume;
 }
+
+enum abstract BulletType(Int) to Int{
+	var Basic;
+}
+
+enum abstract BulletTargetingPriority(Int) to Int{
+	var Closest;
+}
