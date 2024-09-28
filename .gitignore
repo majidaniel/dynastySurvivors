@@ -1,0 +1,7 @@
+build/
+build_linux/
+build.js
+build.js.map
+.ecs_invalidation
+*.hl
+temp_notes.txt

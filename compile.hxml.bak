@@ -1,0 +1,7 @@
+-cp src
+-lib heaps
+-lib ecs
+-lib hlsdl
+-lib differ
+-hl haslink.hl
+-main Main

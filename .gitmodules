@@ -1,0 +1,6 @@
+[submodule "libraries/ecs"]
+	path = libraries/ecs
+	url = https://github.com/Aidan63/ecs.git
+[submodule "libraries/heaps"]
+	path = libraries/heaps
+	url = https://github.com/HeapsIO/heaps.git

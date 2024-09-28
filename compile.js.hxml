@@ -1,0 +1,8 @@
+-cp src
+-cp libraries
+-lib heaps
+-lib ecs
+-lib differ
+-js build.js
+-main Main
+-debug
