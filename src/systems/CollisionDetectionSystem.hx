@@ -12,7 +12,7 @@ import components.Position;
 
 typedef ColliderData = {
 	var entity:Entity;
-	var effects:Array<PendingEffect>;
+	var effects:PendingEffects;
 }
 
 // System that determines collisions between entities with a Collidable component on them
@@ -31,11 +31,11 @@ class CollisionDetectionSystem extends System {
 		iterate(collidables, entity -> {
 			if (!collisionMap.exists(collider.collisionGroup))
 				collisionMap.set(collider.collisionGroup, new Array<Shape>());
-			var colliderData:ColliderData = {entity:entity,effects:collider.collisionEffects};
+			var colliderData:ColliderData = {entity: entity, effects: collider.collisionEffects};
 			collider.shape.data = colliderData;
 			collisionMap.get(collider.collisionGroup).push(collider.shape);
 		});
-
+		var effectArray:Map<Entity, PendingEffects> = new Map<Entity, PendingEffects>();
 		iterate(collidables, {
 			for (collisionChecks in collider.collidesWith) {
 				if (collisionMap.exists(collisionChecks)) {
@@ -44,21 +44,24 @@ class CollisionDetectionSystem extends System {
 						for (x in res.iterator()) {
 							var colliderData1:ColliderData = x.shape1.data;
 							var colliderData2:ColliderData = x.shape2.data;
-							
+
 							universe.setComponents(colliderData1.entity, new Collided(colliderData2.entity));
 							universe.setComponents(colliderData2.entity, new Collided(colliderData1.entity));
 
-							for(effect in colliderData1.effects){
-								universe.setComponents(colliderData2.entity, effect);
-							}
+							if (!effectArray.exists(colliderData1.entity))
+								effectArray[colliderData1.entity] = new PendingEffects();
+							effectArray[colliderData1.entity].concatEffects(colliderData2.effects);
 
-							for(effect in colliderData2.effects){
-								universe.setComponents(colliderData1.entity, effect);
-							}
+							if (!effectArray.exists(colliderData2.entity))
+								effectArray[colliderData2.entity] = new PendingEffects();
+							effectArray[colliderData2.entity].concatEffects(colliderData1.effects);
 						}
 					}
 				}
 			}
 		});
+		for (entity in effectArray.keys()) {
+			universe.setComponents(entity, effectArray[entity]);
+		}
 	}
 }

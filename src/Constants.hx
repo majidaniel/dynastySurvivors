@@ -18,4 +18,6 @@ class Constants{
 	public static var MINION_RELOAD_VARIANCE:Float = 0.1;
 	public static var MINION_MOVE_VARIANCE:Float = 0.1;
 
+	public static var MINION_DISTANCE_PER_RADIAL_LEVEL = 15;
+
 }
