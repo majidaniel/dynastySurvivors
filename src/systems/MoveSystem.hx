@@ -13,6 +13,15 @@ class MoveSystem extends System {
 	@:fastFamily var movables:{pos:Position, vel:Velocity};
 	@:fullFamily var playerMovables:{requires:{pos:Position, vel:Velocity, playerControlled:PlayerControlled}, resources:{inputCapture:InputCapture}};
 
+	override function onEnabled() {
+		super.onEnabled();
+		movables.onEntityRemoved.subscribe(entity ->{
+			setup(movables,{
+				//trace("movable removed");
+			});
+		});
+	}
+
 	override function update(_dt:Float) {
 		iterate(movables, {
 			pos.x += vel.vector.x * _dt;

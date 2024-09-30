@@ -14,22 +14,20 @@ class CollisionResolutionSystem extends System {
 
 	override function update(_dt:Float) {
 		iterate(collissionsWithEffects, entity -> {
-			// position.x = 0;
-			// position.y = 0;
-			// collided.collidedWithEntity;
+			//Avoid calling deleteEntity multiple times
+			var skipOut = false;
 			for (effect in pendingEffect.pendingEffects) {
+				if(skipOut) continue;
 				if (effect.type == ColissionEffectType.Damage) {
 					healthContainer.hpAmount -= effect.amount;
 					if (healthContainer.hpAmount <= 0) {
-						trace(healthContainer.hpAmount);
 						// TODO: offload to destruction system
-						trace("remove " + entity);
 						universe.deleteEntity(entity);
-						return;
+						skipOut = true;
 					}
 				} else if (effect.type == ColissionEffectType.FullConsume) {
 					universe.deleteEntity(entity);
-					return;
+					skipOut = true;
 				}
 			}
 

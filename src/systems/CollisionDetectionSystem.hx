@@ -61,7 +61,8 @@ class CollisionDetectionSystem extends System {
 			}
 		});
 		for (entity in effectArray.keys()) {
-			universe.setComponents(entity, effectArray[entity]);
+			var pendingEffect:PendingEffects = effectArray[entity];
+			universe.setComponents(entity, pendingEffect);
 		}
 	}
 }

@@ -15,18 +15,26 @@ class Main extends hxd.App {
 		hxd.Res.initEmbed();
 		engine.backgroundColor = 0xffffff;
 		s2d.scaleMode = LetterBox(screenSpaceWidth, screenSpaceHeight, false);
-		
+
 		// ECS library, creates a collection of systems that we'll use later to run
 		universe = Universe.create({
-			entities: 1024,
+			entities: 1000000,
 			phases: [
 				{
 					name: 'game-logic',
-					systems: [GameSystem, EnemyDecisionSystem, MinionSystem, BulletSystem, MoveSystem, CollisionDetectionSystem, CollisionResolutionSystem]
+					systems: [
+						GameSystem,
+						EnemyDecisionSystem,
+						MinionSystem,
+						BulletSystem,
+						MoveSystem,
+						CollisionDetectionSystem,
+						CollisionResolutionSystem
+					]
 				},
 				{
 					name: 'rendering',
-					systems: [RenderSystem,UserInterfaceSystem]
+					systems: [RenderSystem, UserInterfaceSystem]
 				}
 			]
 		});
