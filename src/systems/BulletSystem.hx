@@ -43,7 +43,8 @@ class BulletSystem extends System {
 		var bullet = universe.createEntity();
 		universe.setComponents(bullet, new Position(startX, startY), new Velocity(velocity.x, velocity.y),
 			new Sprite(hxd.Res.circle, displayResources.scene, 3, 3),
-			new Collidable(CollisionGroup.PlayerBullet, [CollisionGroup.Enemy], new PendingEffects(ColissionEffectType.Damage, 5), 3), new HealthContainer(1));
+			new Collidable(CollisionGroup.PlayerBullet, [CollisionGroup.Enemy], new PendingEffects(ColissionEffectType.Damage, 5), 3), new HealthContainer(1),
+			new DecayOnDistance(1000));
 	}
 
 	private function determineTargetPosition(type:BulletTargetingPriority, originPosition:Position, targetPositions:Array<Position>):Position {

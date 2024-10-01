@@ -28,8 +28,10 @@ class Main extends hxd.App {
 						MinionSystem,
 						BulletSystem,
 						MoveSystem,
+						DecaySystem,
 						CollisionDetectionSystem,
-						CollisionResolutionSystem
+						CollisionResolutionSystem,
+						DecompositionSystem
 					]
 				},
 				{

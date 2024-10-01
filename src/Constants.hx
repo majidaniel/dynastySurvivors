@@ -19,5 +19,6 @@ class Constants{
 	public static var MINION_MOVE_VARIANCE:Float = 0.1;
 
 	public static var MINION_DISTANCE_PER_RADIAL_LEVEL = 15;
+	public static var MINION_RADIAL_DISTANCE_RATIO = 0.01;
 
 }

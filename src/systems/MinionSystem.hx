@@ -43,11 +43,13 @@ class MinionSystem extends System {
 	function adjustMinionPositions() {
 		setup(minions, {
 			var radialLevels = new Map<Int, Int>();
+			var minionCount = 0;
 			iterate(minions, {
 				if (!radialLevels.exists(follower.radialLevel))
 					radialLevels[follower.radialLevel] = 1;
 				else
 					radialLevels[follower.radialLevel]++;
+				minionCount ++;
 			});
 			var currentPositions = new Map<Int, Int>();
 			for (l in radialLevels.keys()) {
@@ -56,7 +58,7 @@ class MinionSystem extends System {
 			iterate(minions, {
 				var degrees = (2 * Math.PI) * currentPositions[follower.radialLevel] / radialLevels[follower.radialLevel];
 				follower.relativePosition = new Vector(Math.cos(degrees),
-					Math.sin(degrees)).normalized() * follower.radialLevel * Constants.MINION_DISTANCE_PER_RADIAL_LEVEL;
+					Math.sin(degrees)).normalized() * follower.radialLevel * (1 + Constants.MINION_DISTANCE_PER_RADIAL_LEVEL + MINION_RADIAL_DISTANCE_RATIO * follower.radialLevel * minionCount);
 				currentPositions[follower.radialLevel]++;
 			});
 		});

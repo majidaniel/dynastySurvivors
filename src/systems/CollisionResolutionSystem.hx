@@ -21,13 +21,15 @@ class CollisionResolutionSystem extends System {
 				if (effect.type == ColissionEffectType.Damage) {
 					healthContainer.hpAmount -= effect.amount;
 					if (healthContainer.hpAmount <= 0) {
+						universe.setComponents(entity, new Decompose());
 						// TODO: offload to destruction system
-						universe.deleteEntity(entity);
-						skipOut = true;
+						//universe.deleteEntity(entity);
+						//skipOut = true;
 					}
 				} else if (effect.type == ColissionEffectType.FullConsume) {
-					universe.deleteEntity(entity);
-					skipOut = true;
+					//universe.deleteEntity(entity);
+					universe.setComponents(entity, new Decompose());
+					//skipOut = true;
 				}
 			}
 
