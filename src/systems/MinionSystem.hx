@@ -35,7 +35,7 @@ class MinionSystem extends System {
 
 	override function onEnabled() {
 		super.onEnabled();
-		minions.onEntityAdded.subscribe(entity ->{
+		minions.onEntityAdded.subscribe(entity -> {
 			adjustMinionPositions();
 		});
 	}
@@ -43,13 +43,16 @@ class MinionSystem extends System {
 	function adjustMinionPositions() {
 		setup(minions, {
 			var radialLevels = new Map<Int, Int>();
-			var minionCount = 0;
+			var minionCount = new Map<Int, Int>();
 			iterate(minions, {
 				if (!radialLevels.exists(follower.radialLevel))
 					radialLevels[follower.radialLevel] = 1;
 				else
 					radialLevels[follower.radialLevel]++;
-				minionCount ++;
+				if (!minionCount.exists(follower.radialLevel))
+					minionCount[follower.radialLevel] = 1;
+				else
+					minionCount[follower.radialLevel]++;
 			});
 			var currentPositions = new Map<Int, Int>();
 			for (l in radialLevels.keys()) {
@@ -58,7 +61,9 @@ class MinionSystem extends System {
 			iterate(minions, {
 				var degrees = (2 * Math.PI) * currentPositions[follower.radialLevel] / radialLevels[follower.radialLevel];
 				follower.relativePosition = new Vector(Math.cos(degrees),
-					Math.sin(degrees)).normalized() * follower.radialLevel * (1 + Constants.MINION_DISTANCE_PER_RADIAL_LEVEL + MINION_RADIAL_DISTANCE_RATIO * follower.radialLevel * minionCount);
+					Math.sin(degrees)).normalized() * follower.radialLevel * (1
+						+ Constants.MINION_DISTANCE_PER_RADIAL_LEVEL
+						+ MINION_RADIAL_DISTANCE_RATIO * follower.radialLevel * minionCount[follower.radialLevel]);
 				currentPositions[follower.radialLevel]++;
 			});
 		});

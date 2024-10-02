@@ -20,31 +20,43 @@ class BulletSystem extends System {
 				bulletEmitter.timeToNextEmission -= dt;
 				if (bulletEmitter.timeToNextEmission < 0) {
 					cacheEnemyStats();
-					var bulletSpeed = 200;
 					var velocity:Vector = null;
 					var targetPosition = determineTargetPosition(bulletEmitter.targeting, position, this.enemyPositions);
-					// if(closestEnemyPosition != null)
-					//	velocity = closestEnemyPosition.vector.sub(state.playerPosition.vector).normalized()*bulletSpeed;
-					// else
+
 					if (targetPosition == null)
-						velocity = new Vector(Math.random() - 0.5, Math.random() - 0.5).normalized() * bulletSpeed;
+						velocity = new Vector(Math.random() - 0.5, Math.random() - 0.5).normalized();
 					else
-						velocity = new Vector(targetPosition.x - position.x, targetPosition.y - position.y).normalized() * bulletSpeed;
-					addBullet(position.x, position.y, velocity, displayResources);
+						velocity = new Vector(targetPosition.x - position.x, targetPosition.y - position.y).normalized();
+
+					addBullet(bulletEmitter.bulletType, position.x, position.y, velocity, displayResources);
 					bulletEmitter.timeToNextEmission = bulletEmitter.reloadSpeed * (1 + (Math.random() - .5) * Constants.MINION_RELOAD_VARIANCE);
 				}
 			});
 		});
 	}
 
-	// TODO: add types, damage amount
-	public function addBullet(startX:Float, startY:Float, velocity:Vector, displayResources:DisplayResources) {
-		// TODO: prob need to optimize
+	public function addBullet(type:BulletType, startX:Float, startY:Float, velocity:Vector, displayResources:DisplayResources) {
+		var bulletSpeed = 1;
+		var decayEffect:DecayOnDistance=null;
+		var sprite:Sprite = null;
+		if (type == BulletType.Melee){
+			bulletSpeed = 40;
+			decayEffect = new DecayOnDistance(20);
+			sprite = new Sprite(hxd.Res.circle, displayResources.scene, 10, 10);
+		}
+		else if (type == BulletType.Basic){
+			bulletSpeed = 200;
+			decayEffect = new DecayOnDistance(1000);
+			sprite = new Sprite(hxd.Res.circle, displayResources.scene, 3, 3);
+		}
+
+		velocity *= bulletSpeed;
+
 		var bullet = universe.createEntity();
 		universe.setComponents(bullet, new Position(startX, startY), new Velocity(velocity.x, velocity.y),
-			new Sprite(hxd.Res.circle, displayResources.scene, 3, 3),
+			sprite,
 			new Collidable(CollisionGroup.PlayerBullet, [CollisionGroup.Enemy], new PendingEffects(ColissionEffectType.Damage, 5), 3), new HealthContainer(1),
-			new DecayOnDistance(1000));
+			decayEffect);
 	}
 
 	private function determineTargetPosition(type:BulletTargetingPriority, originPosition:Position, targetPositions:Array<Position>):Position {

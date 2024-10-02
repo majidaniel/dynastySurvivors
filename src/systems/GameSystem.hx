@@ -1,5 +1,6 @@
 package systems;
 
+import Types.MinionType;
 import ecs.Universe;
 import ecs.System;
 import Types.CollisionGroup;
@@ -14,11 +15,13 @@ class GameSystem extends System {
 		resources:{state:GameState, displayResources:DisplayResources}
 	};
 
-	var enemySpawnCap:Float = 1;
+	var enemySpawnCap:Float = .01;
 	var enemySpawn:Float = 0;
 
 	var minionSpawnCap:Float = 1;
 	var minionSpawn:Float = 0;
+
+	var minionCount = 0;
 
 	public override function update(dt:Float) {
 		setup(gameState, {
@@ -31,13 +34,18 @@ class GameSystem extends System {
 			this.enemySpawn -= dt;
 			if (enemySpawn < 0) {
 				enemySpawn = enemySpawnCap;
-				addEnemy(displayResources);
+				addEnemy(state.playerPosition,displayResources);
 			}
 
 			this.minionSpawn -= dt;
 			if (this.minionSpawn < 0) {
-				this.addMinion(state.playerPosition.x, state.playerPosition.y, displayResources);
-				this.minionSpawn = this.minionSpawnCap;
+				if (minionCount % 10 == 0)
+					this.addMinion(MinionType.SlowDefender, state.playerPosition.x, state.playerPosition.y, displayResources);
+				else
+					this.addMinion(MinionType.BasicShooter, state.playerPosition.x, state.playerPosition.y, displayResources);
+				if (minionCount > 100)
+					this.minionSpawn = this.minionSpawnCap;
+				minionCount++;
 			}
 		});
 	}
@@ -55,17 +63,26 @@ class GameSystem extends System {
 		});
 	}
 
-	public function addMinion(initX:Float, initY:Float, displayResources:DisplayResources) {
+	public function addMinion(type:Types.MinionType, initX:Float, initY:Float, displayResources:DisplayResources) {
 		var follower = universe.createEntity();
-		universe.setComponents(follower, new Position(initX, initY), new Velocity(0, 0), new Sprite(hxd.Res.circle_green, displayResources.scene, 5, 5),
-			new PlayerFollower(Constants.MINION_MAX_SPEED * (1 + (Math.random() - 0.5) * Constants.MINION_MOVE_VARIANCE), Constants.MINION_ACCELERATION, 1),
-			new BulletEmitter(BulletType.Basic, 0.5));
+		if (type == MinionType.BasicShooter) {
+			universe.setComponents(follower, new Position(initX, initY), new Velocity(0, 0), new Sprite(hxd.Res.circle_green, displayResources.scene, 4, 4),
+				new PlayerFollower(Constants.MINION_MAX_SPEED * (1 + (Math.random() - 0.5) * Constants.MINION_MOVE_VARIANCE), Constants.MINION_ACCELERATION, 1),
+				new BulletEmitter(BulletType.Basic, 0.5));
+		} else if (type == MinionType.SlowDefender) {
+			universe.setComponents(follower, new Position(initX, initY), new Velocity(0, 0), new Sprite(hxd.Res.circle_green, displayResources.scene, 6, 6),
+				new PlayerFollower(Constants.MINION_MAX_SPEED / 4 * (1 + (Math.random() - 0.5) * Constants.MINION_MOVE_VARIANCE),
+					Constants.MINION_ACCELERATION / 10, 2),
+				new BulletEmitter(BulletType.Melee, 2));
+		}
 	}
 
 	// TODO: add types
-	public function addEnemy(displayResources:DisplayResources) {
+	public function addEnemy(playerPosition:Position,displayResources:DisplayResources) {
 		var enemy = universe.createEntity();
-		universe.setComponents(enemy, new Position(100, 100), new Velocity(0, 0), new Sprite(hxd.Res.circle_red, displayResources.scene, 10, 10),
+		var vector:Vector = new Vector(Math.random()-0.5,Math.random()-0.5).normalized()*300;
+		vector.add(playerPosition.vector);
+		universe.setComponents(enemy, new Position(vector.x,vector.y), new Velocity(0, 0), new Sprite(hxd.Res.circle_red, displayResources.scene, 10, 10),
 			new PlayerSeeker(PlayerSeekingType.Linear, Constants.ENEMY_DEFAULT_MAX_SPEED, Constants.ENEMY_DEFAULT_ACCELERATION),
 			new Collidable(CollisionGroup.Enemy, [CollisionGroup.Player], new PendingEffects(ColissionEffectType.Damage, 10), 5), new Enemy(),
 			new HealthContainer(20));

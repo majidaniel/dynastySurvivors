@@ -1,3 +1,5 @@
+import haxe.macro.Compiler.IncludePosition;
+
 enum abstract GameAction(Int) to Int {
 	var MoveLeft;
 	var MoveRight;
@@ -22,8 +24,14 @@ enum abstract ColissionEffectType(Int) to Int{
 
 enum abstract BulletType(Int) to Int{
 	var Basic;
+	var Melee;
 }
 
 enum abstract BulletTargetingPriority(Int) to Int{
 	var Closest;
+}
+
+enum abstract MinionType(Int) to Int{
+	var BasicShooter;
+	var SlowDefender;
 }
