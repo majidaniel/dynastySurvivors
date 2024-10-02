@@ -1,13 +1,20 @@
 package systems;
 
+import Types.QueueType;
+import Types.MinionType;
 import js.lib.intl.NumberFormat.CurrencyDisplay;
 import haxe.ds.Map;
+import macros.*;
+
+typedef MinionRequest = {var minionType:MinionType; var startPosition:Position;}
 
 class MinionSystem extends System {
 	@:fullFamily var minions:{
 		requires:{follower:PlayerFollower, velocity:Velocity, position:Position},
-		resources:{state:GameState, displayResources:DisplayResources}
+		resources:{state:GameState, displayResources:DisplayResources, queues:Queues}
 	};
+
+	var minionDetailsList = JsonMacro.load('res/minions.json');
 
 	override function update(_dt:Float) {
 		setup(minions, {
@@ -30,6 +37,13 @@ class MinionSystem extends System {
 					}
 				}
 			});
+
+			var minionCreationQueue = queues.getQueue(QueueType.MinionCreationQueue);
+			for (req in minionCreationQueue) {
+				var minionRequest:MinionRequest = req;
+				createMinion(req.minionType, req.startPosition, displayResources);
+			}
+			queues.clearQueue(QueueType.MinionCreationQueue);
 		});
 	}
 
@@ -38,6 +52,27 @@ class MinionSystem extends System {
 		minions.onEntityAdded.subscribe(entity -> {
 			adjustMinionPositions();
 		});
+		trace(minionDetailsList);
+	}
+
+	function createMinion(type:MinionType, startPosition:Position, displayResources:DisplayResources) {
+		var minionData = minionDetailsList.BasicShooter;
+		switch (type) {
+			case BasicShooter:
+				minionData = minionDetailsList.BasicShooter;
+			case SlowDefender:
+				minionData = minionDetailsList.SlowDefender;
+		}
+		var follower = universe.createEntity();
+		universe.setComponents(follower, startPosition, new Velocity(0, 0),
+			new PlayerFollower(minionData.maxSpeed * (1 + (Math.random() - 0.5) * Constants.MINION_MOVE_VARIANCE), minionData.acceleration,
+				minionData.radialLevel));
+
+		if (type == MinionType.BasicShooter) {
+			universe.setComponents(follower, new Sprite(hxd.Res.circle_green, displayResources.scene, 4, 4), new BulletEmitter(BulletType.Basic, 0.5));
+		} else if (type == MinionType.SlowDefender) {
+			universe.setComponents(follower, new Sprite(hxd.Res.circle_green, displayResources.scene, 6, 6), new BulletEmitter(BulletType.Melee, 2));
+		}
 	}
 
 	function adjustMinionPositions() {

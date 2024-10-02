@@ -31,7 +31,11 @@ enum abstract BulletTargetingPriority(Int) to Int{
 	var Closest;
 }
 
-enum abstract MinionType(Int) to Int{
+enum abstract MinionType(String) to String{
 	var BasicShooter;
 	var SlowDefender;
+}
+
+enum abstract QueueType(String) to String{
+	var MinionCreationQueue;
 }
