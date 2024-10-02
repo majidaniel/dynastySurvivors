@@ -1,0 +1,19 @@
+{
+    "BasicShooter":{
+        "reloadSpeed":0.5,
+        "maxSpeed":200.0,
+        "acceleration":1000.0,
+        "radialLevel":1,
+        "tiers":[
+            {"numberToUpgradeTo":5,"reloadSpeed":0.2},
+            {"numberToUpgradeTo":5,"reloadSpeed":0.1}
+        ]
+    },
+    "SlowDefender":{
+        "reloadSpeed":1.0,
+        "maxSpeed":50.0,
+        "acceleration":20.0,
+        "radialLevel":2,
+        "tiers":[]
+    }
+}
