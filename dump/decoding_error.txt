@@ -1,0 +1,2 @@
+{BasicShooter: {maxSpeed: 200, radialLevel: 1, reloadSpeed: 0.5, acceleration: 1000, tiers: [{reloadSpeed: 0.2, numberToUpgradeTo: 5},{reloadSpeed: 0.1, numberToUpgradeTo: 5}]}, SlowDefender: {maxSpeed: 50, radialLevel: 2, reloadSpeed: 1, acceleration: 20, tiers: []}} <- expected Array
+line 1: expected Array

@@ -6,6 +6,7 @@ import js.lib.intl.NumberFormat.CurrencyDisplay;
 import haxe.ds.Map;
 import macros.*;
 
+
 typedef MinionRequest = {var minionType:MinionType; var startPosition:Position;}
 
 class MinionSystem extends System {
@@ -52,11 +53,12 @@ class MinionSystem extends System {
 		minions.onEntityAdded.subscribe(entity -> {
 			adjustMinionPositions();
 		});
-		trace(minionDetailsList);
+		trace(MinionList.data);
+		//trace(minionDetailsList);
 	}
 
 	function createMinion(type:MinionType, startPosition:Position, displayResources:DisplayResources) {
-		var minionData = minionDetailsList.BasicShooter;
+		/*var minionData = minionDetailsList.BasicShooter;
 		switch (type) {
 			case BasicShooter:
 				minionData = minionDetailsList.BasicShooter;
@@ -72,7 +74,7 @@ class MinionSystem extends System {
 			universe.setComponents(follower, new Sprite(hxd.Res.circle_green, displayResources.scene, 4, 4), new BulletEmitter(BulletType.Basic, 0.5));
 		} else if (type == MinionType.SlowDefender) {
 			universe.setComponents(follower, new Sprite(hxd.Res.circle_green, displayResources.scene, 6, 6), new BulletEmitter(BulletType.Melee, 2));
-		}
+		}*/
 	}
 
 	function adjustMinionPositions() {

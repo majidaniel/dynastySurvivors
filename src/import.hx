@@ -4,6 +4,7 @@ import Types.PlayerSeekingType;
 import Types.ColissionEffectType;
 import Types.BulletType;
 import Types.BulletTargetingPriority;
+import Types.MinionType;
 import Constants.*;
 import components.*;
 import resources.*;
