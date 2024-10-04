@@ -13,9 +13,11 @@ class InputCapture {
 		keycodeMap.set(39, GameAction.MoveRight);
 		keycodeMap.set(40, GameAction.MoveDown);
 		keycodeMap.set(37, GameAction.MoveLeft);
+		keycodeMap.set(32, GameAction.MergeAction);
 	}
 
 	public function onEvent(event:hxd.Event) {
+		trace(event.keyCode);
 		switch (event.kind) {
 			case EKeyDown:
 				var actionType = keycodeMap.get(event.keyCode);

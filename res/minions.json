@@ -12,8 +12,8 @@
     },
     {
         "type": "ShooterTier2",
-        "reloadSpeed": 0.2,
-        "maxSpeed": 20.0,
+        "reloadSpeed": 0.1,
+        "maxSpeed": 0.0,
         "acceleration": 10.0,
         "radialLevel": 10
     },

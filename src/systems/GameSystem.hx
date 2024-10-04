@@ -19,6 +19,7 @@ class GameSystem extends System {
 
 	var enemySpawnCap:Float = .5;
 	var enemySpawn:Float = 0;
+	var enemyCount:Int = 0;
 
 	var minionSpawnCap:Float = 1;
 	var minionSpawn:Float = 0;
@@ -35,8 +36,9 @@ class GameSystem extends System {
 
 			this.enemySpawn -= dt;
 			if (enemySpawn < 0) {
-				enemySpawn = enemySpawnCap;
 				addEnemy(state.playerPosition, displayResources);
+				enemyCount;
+				enemySpawn = enemySpawnCap - 0.4 * (enemyCount / 100);
 			}
 
 			this.minionSpawn -= dt;
@@ -72,8 +74,8 @@ class GameSystem extends System {
 	// TODO: add types
 	public function addEnemy(playerPosition:Position, displayResources:DisplayResources) {
 		var enemy = universe.createEntity();
-		var vector:Vector = new Vector(Math.random() - 0.5, Math.random() - 0.5).normalized() * 300;
-		vector.add(playerPosition.vector);
+		var vector:Vector = new Vector(Math.random() - 0.5, Math.random() - 0.5).normalized() * 360;
+		vector = vector.add(playerPosition.vector);
 		universe.setComponents(enemy, new Position(vector.x, vector.y), new Velocity(0, 0), new Sprite(hxd.Res.circle_red, displayResources.scene, 10, 10),
 			new PlayerSeeker(PlayerSeekingType.Linear, Constants.ENEMY_DEFAULT_MAX_SPEED, Constants.ENEMY_DEFAULT_ACCELERATION),
 			new Collidable(CollisionGroup.Enemy, [CollisionGroup.Player], new PendingEffects(ColissionEffectType.Damage, 10), 5), new Enemy(),

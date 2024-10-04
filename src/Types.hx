@@ -5,6 +5,7 @@ enum abstract GameAction(Int) to Int {
 	var MoveRight;
 	var MoveUp;
 	var MoveDown;
+	var MergeAction;
 }
 
 enum abstract CollisionGroup(Int) to Int {

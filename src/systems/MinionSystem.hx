@@ -13,10 +13,11 @@ typedef MinionRequest = {var minionType:MinionType; var startPosition:Position;}
 class MinionSystem extends System {
 	@:fullFamily var minions:{
 		requires:{follower:PlayerFollower, velocity:Velocity, position:Position},
-		resources:{state:GameState, displayResources:DisplayResources, queues:Queues}
+		resources:{state:GameState, displayResources:DisplayResources, queues:Queues, inputCapture:InputCapture}
 	};
 
 	var minionDetailsList:Map<MinionType, MinionData> = new std.Map();
+	var mergeActionReset = false;
 
 	override function update(_dt:Float) {
 		setup(minions, {
@@ -46,8 +47,17 @@ class MinionSystem extends System {
 				createMinion(req.minionType, req.startPosition, displayResources);
 			}
 			queues.clearQueue(QueueType.MinionCreationQueue);
+			
+			if(inputCapture.getActionStatus(GameAction.MergeAction)){
+				if(! mergeActionReset){
+					mergeMinions();
+					mergeActionReset = true;
+				}
+			}else{
+				mergeActionReset = false;
+			}
+				
 		});
-		mergeMinions();
 	}
 
 	override function onEnabled() {
