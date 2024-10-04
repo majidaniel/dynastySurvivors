@@ -34,6 +34,7 @@ enum abstract BulletTargetingPriority(Int) to Int{
 enum abstract MinionType(String) to String{
 	var BasicShooter;
 	var SlowDefender;
+	var ShooterTier2;
 }
 
 enum abstract QueueType(String) to String{

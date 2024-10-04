@@ -1,11 +1,12 @@
 package systems;
 
+import js.html.SpeechRecognitionResultList;
+import game.MinionData;
 import Types.QueueType;
 import Types.MinionType;
 import js.lib.intl.NumberFormat.CurrencyDisplay;
 import haxe.ds.Map;
 import macros.*;
-
 
 typedef MinionRequest = {var minionType:MinionType; var startPosition:Position;}
 
@@ -15,7 +16,7 @@ class MinionSystem extends System {
 		resources:{state:GameState, displayResources:DisplayResources, queues:Queues}
 	};
 
-	var minionDetailsList = JsonMacro.load('res/minions.json');
+	var minionDetailsList:Map<MinionType, MinionData> = new std.Map();
 
 	override function update(_dt:Float) {
 		setup(minions, {
@@ -46,6 +47,7 @@ class MinionSystem extends System {
 			}
 			queues.clearQueue(QueueType.MinionCreationQueue);
 		});
+		mergeMinions();
 	}
 
 	override function onEnabled() {
@@ -53,28 +55,28 @@ class MinionSystem extends System {
 		minions.onEntityAdded.subscribe(entity -> {
 			adjustMinionPositions();
 		});
-		trace(MinionList.data);
-		//trace(minionDetailsList);
+		var dat:Array<Dynamic> = JsonMacro.load('res/minions.json');
+		for (ent in dat) {
+			var minionData = new MinionData(ent);
+			minionDetailsList.set(minionData.type, minionData);
+		}
 	}
 
 	function createMinion(type:MinionType, startPosition:Position, displayResources:DisplayResources) {
-		/*var minionData = minionDetailsList.BasicShooter;
-		switch (type) {
-			case BasicShooter:
-				minionData = minionDetailsList.BasicShooter;
-			case SlowDefender:
-				minionData = minionDetailsList.SlowDefender;
-		}
+		var minionData = minionDetailsList.get(type);
+
 		var follower = universe.createEntity();
 		universe.setComponents(follower, startPosition, new Velocity(0, 0),
-			new PlayerFollower(minionData.maxSpeed * (1 + (Math.random() - 0.5) * Constants.MINION_MOVE_VARIANCE), minionData.acceleration,
+			new PlayerFollower(type, minionData.maxSpeed * (1 + (Math.random() - 0.5) * Constants.MINION_MOVE_VARIANCE), minionData.acceleration,
 				minionData.radialLevel));
 
 		if (type == MinionType.BasicShooter) {
-			universe.setComponents(follower, new Sprite(hxd.Res.circle_green, displayResources.scene, 4, 4), new BulletEmitter(BulletType.Basic, 0.5));
+			universe.setComponents(follower, new Sprite(hxd.Res.circle_green, displayResources.scene, 4, 4), new BulletEmitter(BulletType.Basic, minionData.reloadSpeed));
 		} else if (type == MinionType.SlowDefender) {
-			universe.setComponents(follower, new Sprite(hxd.Res.circle_green, displayResources.scene, 6, 6), new BulletEmitter(BulletType.Melee, 2));
-		}*/
+			universe.setComponents(follower, new Sprite(hxd.Res.circle_green, displayResources.scene, 6, 6), new BulletEmitter(BulletType.Melee, minionData.reloadSpeed));
+		} else if (type == MinionType.ShooterTier2) {
+			universe.setComponents(follower, new Sprite(hxd.Res.circle_green, displayResources.scene, 10, 10), new BulletEmitter(BulletType.Basic, minionData.reloadSpeed));
+		}
 	}
 
 	function adjustMinionPositions() {
@@ -103,6 +105,34 @@ class MinionSystem extends System {
 						+ MINION_RADIAL_DISTANCE_RATIO * follower.radialLevel * minionCount[follower.radialLevel]);
 				currentPositions[follower.radialLevel]++;
 			});
+		});
+	}
+
+	function mergeMinions() {
+		var minionCount = new Map<MinionType, Int>();
+		setup(minions, {
+			iterate(minions, {
+				if (!minionCount.exists(follower.type))
+					minionCount.set(follower.type, 1);
+				else
+					minionCount[follower.type]++;
+			});
+			for (type => count in minionCount) {
+				if (count > minionDetailsList[type].numberToUpgrade) {
+					var req:MinionRequest = {
+						minionType: minionDetailsList[type].upgradeMinion,
+						startPosition: new Position(state.playerPosition.x, state.playerPosition.y)
+					};
+					queues.queue(QueueType.MinionCreationQueue, req);
+					var destroyCount = minionDetailsList[type].numberToUpgrade;
+					iterate(minions, entity -> {
+						if(follower.type == type && destroyCount > 0){
+							universe.setComponents(entity, new Decompose());
+							destroyCount --;
+						}
+					});
+				}
+			}
 		});
 	}
 }

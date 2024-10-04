@@ -17,7 +17,7 @@ class GameSystem extends System {
 		resources:{state:GameState, displayResources:DisplayResources, queues:Queues}
 	};
 
-	var enemySpawnCap:Float = .01;
+	var enemySpawnCap:Float = .5;
 	var enemySpawn:Float = 0;
 
 	var minionSpawnCap:Float = 1;
@@ -41,12 +41,11 @@ class GameSystem extends System {
 
 			this.minionSpawn -= dt;
 			if (this.minionSpawn < 0) {
-				if (minionCount % 10 == 0)
-					this.addMinion(MinionType.SlowDefender, state.playerPosition.x, state.playerPosition.y, queues);
-				else
+				//if (minionCount % 10 == 0)
+				//	this.addMinion(MinionType.SlowDefender, state.playerPosition.x, state.playerPosition.y, queues);
+				//else
 					this.addMinion(MinionType.BasicShooter, state.playerPosition.x, state.playerPosition.y, queues);
-				if (minionCount > 100)
-					this.minionSpawn = this.minionSpawnCap;
+				this.minionSpawn = this.minionSpawnCap;
 				minionCount++;
 			}
 		});
