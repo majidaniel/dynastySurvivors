@@ -19,7 +19,7 @@ class GameSystem extends System {
 
 	var enemySpawnCap:Float = .5;
 	var enemySpawn:Float = 0;
-	var enemyCount:Int = 0;
+	var enemyCount:Int = 1;
 
 	var minionSpawnCap:Float = 1;
 	var minionSpawn:Float = 0;
@@ -36,9 +36,11 @@ class GameSystem extends System {
 
 			this.enemySpawn -= dt;
 			if (enemySpawn < 0) {
-				addEnemy(state.playerPosition, displayResources);
+				for(i in 0 ... Math.ceil(enemyCount / 5) * 2){
+					addEnemy(state.playerPosition, displayResources);
+				}
 				enemyCount;
-				enemySpawn = enemySpawnCap - 0.4 * (enemyCount / 100);
+				enemySpawn = enemySpawnCap - 0.25 * (enemyCount % 50 / 50);
 			}
 
 			this.minionSpawn -= dt;
@@ -79,6 +81,6 @@ class GameSystem extends System {
 		universe.setComponents(enemy, new Position(vector.x, vector.y), new Velocity(0, 0), new Sprite(hxd.Res.circle_red, displayResources.scene, 10, 10),
 			new PlayerSeeker(PlayerSeekingType.Linear, Constants.ENEMY_DEFAULT_MAX_SPEED, Constants.ENEMY_DEFAULT_ACCELERATION),
 			new Collidable(CollisionGroup.Enemy, [CollisionGroup.Player], new PendingEffects(ColissionEffectType.Damage, 10), 5), new Enemy(),
-			new HealthContainer(20));
+			new HealthContainer(40));
 	}
 }

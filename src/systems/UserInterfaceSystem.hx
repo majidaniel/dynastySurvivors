@@ -26,7 +26,7 @@ class UserInterfaceSystem extends System {
 				debugText.color = new Vector4(0, 0, 0);
 				debugText.setPosition(10, 10);
 				displayResources.scene.add(debugText);
-			}
+			} 
 
 			if (commandGraphic == null) {
 				commandGraphic = new Graphics(displayResources.scene);
