@@ -32,6 +32,8 @@ class UserInterfaceSystem extends System {
 				commandGraphic = new Graphics(displayResources.scene);
 			}
 
+			debugText.text = state.debugText;
+
 			debugStuff(displayResources);
 			//debugText.text = state.debugText;
 			//buildCommandBar(state.availableActions, displayResources.scene);

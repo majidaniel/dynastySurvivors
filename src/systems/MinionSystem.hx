@@ -13,15 +13,31 @@ typedef MinionRequest = {var minionType:MinionType; var startPosition:Position;}
 class MinionSystem extends System {
 	@:fullFamily var minions:{
 		requires:{follower:PlayerFollower, velocity:Velocity, position:Position},
-		resources:{state:GameState, displayResources:DisplayResources, queues:Queues, inputCapture:InputCapture}
+		resources:{
+			state:GameState,
+			displayResources:DisplayResources,
+			queues:Queues,
+			inputCapture:InputCapture
+		}
 	};
 
 	var minionDetailsList:Map<MinionType, MinionData> = new std.Map();
 	var mergeActionReset = false;
 
 	override function update(_dt:Float) {
+		var minionCount = new Map<MinionType, Int>();
 		setup(minions, {
 			iterate(minions, {
+				//Build up minionCount status. TODO: Move into add/remove moments only
+				if (!minionCount.exists(follower.type))
+					minionCount.set(follower.type, 1);
+				else{
+					minionCount[follower.type]++;
+					if(minionCount[follower.type] > 5)
+						state.debugText = "Spacebar to merge!";
+				}
+
+				//Update target velocity for minion. TODO: doesn't need to happen every cycle
 				var vectorY = state.playerPosition.y - position.y + follower.relativePosition.y;
 				var vectorX = state.playerPosition.x - position.x + follower.relativePosition.x;
 				var vector = new Vector(vectorX, vectorY);
@@ -43,20 +59,20 @@ class MinionSystem extends System {
 
 			var minionCreationQueue = queues.getQueue(QueueType.MinionCreationQueue);
 			for (req in minionCreationQueue) {
-				var minionRequest:MinionRequest = req;
+				//var minionRequest:MinionRequest = req;
 				createMinion(req.minionType, req.startPosition, displayResources);
 			}
 			queues.clearQueue(QueueType.MinionCreationQueue);
-			
-			if(inputCapture.getActionStatus(GameAction.MergeAction)){
-				if(! mergeActionReset){
-					mergeMinions();
+
+			if (inputCapture.getActionStatus(GameAction.MergeAction)) {
+				if (!mergeActionReset) {
+					mergeMinions(minionCount);
 					mergeActionReset = true;
+					state.debugText = "";
 				}
-			}else{
+			} else {
 				mergeActionReset = false;
 			}
-				
 		});
 	}
 
@@ -81,11 +97,14 @@ class MinionSystem extends System {
 				minionData.radialLevel));
 
 		if (type == MinionType.BasicShooter) {
-			universe.setComponents(follower, new Sprite(hxd.Res.circle_green, displayResources.scene, 4, 4), new BulletEmitter(BulletType.Basic, minionData.reloadSpeed));
+			universe.setComponents(follower, new Sprite(hxd.Res.circle_green, displayResources.scene, 4, 4),
+				new BulletEmitter(BulletType.Basic, minionData.reloadSpeed));
 		} else if (type == MinionType.SlowDefender) {
-			universe.setComponents(follower, new Sprite(hxd.Res.circle_green, displayResources.scene, 6, 6), new BulletEmitter(BulletType.Melee, minionData.reloadSpeed));
+			universe.setComponents(follower, new Sprite(hxd.Res.circle_green, displayResources.scene, 6, 6),
+				new BulletEmitter(BulletType.Melee, minionData.reloadSpeed));
 		} else if (type == MinionType.ShooterTier2) {
-			universe.setComponents(follower, new Sprite(hxd.Res.circle_green, displayResources.scene, 10, 10), new BulletEmitter(BulletType.Basic, minionData.reloadSpeed));
+			universe.setComponents(follower, new Sprite(hxd.Res.circle_green, displayResources.scene, 10, 10),
+				new BulletEmitter(BulletType.Basic, minionData.reloadSpeed));
 		}
 	}
 
@@ -118,15 +137,8 @@ class MinionSystem extends System {
 		});
 	}
 
-	function mergeMinions() {
-		var minionCount = new Map<MinionType, Int>();
+	function mergeMinions(minionCount:Map<MinionType, Int>) {
 		setup(minions, {
-			iterate(minions, {
-				if (!minionCount.exists(follower.type))
-					minionCount.set(follower.type, 1);
-				else
-					minionCount[follower.type]++;
-			});
 			for (type => count in minionCount) {
 				if (count > minionDetailsList[type].numberToUpgrade) {
 					var req:MinionRequest = {
@@ -136,9 +148,9 @@ class MinionSystem extends System {
 					queues.queue(QueueType.MinionCreationQueue, req);
 					var destroyCount = minionDetailsList[type].numberToUpgrade;
 					iterate(minions, entity -> {
-						if(follower.type == type && destroyCount > 0){
+						if (follower.type == type && destroyCount > 0) {
 							universe.setComponents(entity, new Decompose());
-							destroyCount --;
+							destroyCount--;
 						}
 					});
 				}

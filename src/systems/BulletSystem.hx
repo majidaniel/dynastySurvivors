@@ -46,7 +46,7 @@ class BulletSystem extends System {
 		}
 		else if (type == BulletType.Basic){
 			bulletSpeed = 200;
-			decayEffect = new DecayOnDistance(1000);
+			decayEffect = new DecayOnDistance(200);
 			sprite = new Sprite(hxd.Res.circle, displayResources.scene, 3, 3);
 		}
 

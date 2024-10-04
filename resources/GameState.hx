@@ -9,6 +9,7 @@ class GameState{
     public var levelComplete:Bool = null;
     public var hp:Int = 100;
     public var playerPosition:Position = null;
+    public var debugText:String = "";
 
     public function new(){
         
