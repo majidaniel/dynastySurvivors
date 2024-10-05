@@ -37,7 +37,7 @@ class GameSystem extends System {
 			this.enemySpawn -= dt;
 			if (enemySpawn < 0) {
 				for(i in 0 ... Math.ceil(enemyCount / 5) * Math.ceil(enemyCount / 20) * 2){
-					addEnemy(state.playerPosition, displayResources);
+					addEnemy(state.playerPosition, displayResources); 
 				}
 				enemyCount;
 				enemySpawn = enemySpawnCap - 0.25 * (enemyCount % 50 / 50);
