@@ -10,6 +10,8 @@ class GameState{
     public var hp:Int = 100;
     public var playerPosition:Position = null;
     public var debugText:String = "";
+    public var xp:Float = 0;
+    public var canPlayerTakeAction:Bool=false;
 
     public function new(){
         

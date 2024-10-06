@@ -40,4 +40,5 @@ enum abstract MinionType(String) to String{
 
 enum abstract QueueType(String) to String{
 	var MinionCreationQueue;
+	var XpQueue;
 }

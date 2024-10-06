@@ -5,6 +5,7 @@ import Types.ColissionEffectType;
 import Types.BulletType;
 import Types.BulletTargetingPriority;
 import Types.MinionType;
+import Types.QueueType;
 import Constants.*;
 import components.*;
 import resources.*;

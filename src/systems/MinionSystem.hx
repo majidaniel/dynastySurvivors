@@ -33,8 +33,12 @@ class MinionSystem extends System {
 					minionCount.set(follower.type, 1);
 				else{
 					minionCount[follower.type]++;
-					if(minionCount[follower.type] > 5)
-						state.debugText = "Spacebar to merge!";
+					if(minionCount[follower.type] > 5){
+						//state.debugText = "Spacebar to merge!";
+						state.canPlayerTakeAction = true;
+					}else{
+						state.canPlayerTakeAction = false;
+					}
 				}
 
 				//Update target velocity for minion. TODO: doesn't need to happen every cycle
@@ -68,7 +72,7 @@ class MinionSystem extends System {
 				if (!mergeActionReset) {
 					mergeMinions(minionCount);
 					mergeActionReset = true;
-					state.debugText = "";
+					//state.debugText = "";
 				}
 			} else {
 				mergeActionReset = false;

@@ -1,11 +1,7 @@
 package systems;
 
-import components.Position;
 import ecs.System;
-import components.PlayerControlled;
 import components.Collided;
-import resources.GameState;
-import resources.DisplayResources;
 
 // System that resolves collissions
 // Keeping this separate from the detection system let's us layer on game logic into colissions without complicating the detection engine

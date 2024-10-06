@@ -24,6 +24,7 @@ class Main extends hxd.App {
 					name: 'game-logic',
 					systems: [
 						GameSystem,
+						XpSystem,
 						EnemyDecisionSystem,
 						MinionSystem,
 						BulletSystem,
