@@ -33,6 +33,8 @@ class GameSystem extends System {
 
 	var xpGainAmount = 5;
 
+	var initialMinions = 5;
+
 	public override function update(dt:Float) {
 		setup(gameState, {
 			// If not level is loaded, load a level
@@ -43,11 +45,12 @@ class GameSystem extends System {
 
 			this.enemySpawn -= dt;
 			if (enemySpawn < 0) {
-				for (i in 0...Math.ceil(enemyCount / 5) * Math.ceil(enemyCount / 20)) {
+				for (i in 0...Math.ceil(enemyCount / 50) * Math.ceil(enemyCount / 100) * 2) {
 					addEnemy(state.playerPosition, displayResources, queues);
 				}
-				enemyCount;
-				enemySpawn = enemySpawnCap - 0.25 * (enemyCount % 50 / 50);
+				enemyCount ++;
+				enemySpawn = enemySpawnCap;
+				//enemySpawn = enemySpawnCap - 0.25 * (enemyCount % 50 / 50);
 			}
 
 			this.xpGain -= dt;
@@ -66,17 +69,15 @@ class GameSystem extends System {
 	public function initTestScene(displayResources:DisplayResources) {
 		setup(gameState, {
 			final playerObject = universe.createEntity();
-			state.hp = 100;
+			var hp = new HealthContainer(100);
+			state.hp = hp;
 			final playerPosition = new Position(200, 200);
 			state.playerPosition = playerPosition;
 			universe.setComponents(playerObject, playerPosition, new Velocity(0, 0), new Sprite(hxd.Res.circle_orange, displayResources.scene, 7, 7),
 				new PlayerControlled(),
-				new Collidable(CollisionGroup.Player, [CollisionGroup.Enemy], new PendingEffects(ColissionEffectType.FullConsume, 10000), 3.5),
-				new HealthContainer(100));
-			addMinion(MinionType.BasicShooter, state.playerPosition.x, state.playerPosition.y, queues);
-			addMinion(MinionType.BasicShooter, state.playerPosition.x, state.playerPosition.y, queues);
-			addMinion(MinionType.BasicShooter, state.playerPosition.x, state.playerPosition.y, queues);
-			addMinion(MinionType.BasicShooter, state.playerPosition.x, state.playerPosition.y, queues);
+				new Collidable(CollisionGroup.Player, [CollisionGroup.Enemy], new PendingEffects(ColissionEffectType.FullConsume, 10000), 3.5), hp);
+			for (i in 0...initialMinions)
+				addMinion(MinionType.BasicShooter, state.playerPosition.x, state.playerPosition.y, queues);
 		});
 	}
 
@@ -109,8 +110,8 @@ class GameSystem extends System {
 		vector = vector.add(playerPosition.vector);
 		universe.setComponents(enemy, new Position(vector.x, vector.y), new Velocity(0, 0), new Sprite(hxd.Res.circle_red, displayResources.scene, 10, 10),
 			new PlayerSeeker(PlayerSeekingType.Linear, Constants.ENEMY_DEFAULT_MAX_SPEED, Constants.ENEMY_DEFAULT_ACCELERATION),
-			new Collidable(CollisionGroup.Enemy, [CollisionGroup.Player], new PendingEffects(ColissionEffectType.Damage, 10), 5), new Enemy(),
-			new HealthContainer(20), new DecomposeEffects([
+			new Collidable(CollisionGroup.Enemy, [CollisionGroup.Player], new PendingEffects(ColissionEffectType.Damage, 10), 5), 
+			new HealthContainer(10), new DecomposeEffects([
 				function() {
 					queues.queue(QueueType.XpQueue, new XpGainRequest(5));
 				}

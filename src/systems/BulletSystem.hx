@@ -9,7 +9,7 @@ class BulletSystem extends System {
 		resources:{state:GameState, displayResources:DisplayResources}
 	};
 	@:fullFamily var enemyList:{
-		requires:{enemy:Enemy, position:Position},
+		requires:{playerSeeker:PlayerSeeker, position:Position, hp:HealthContainer},
 		resources:{state:GameState}
 	}
 

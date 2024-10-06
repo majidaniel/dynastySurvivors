@@ -1,5 +1,6 @@
 package resources;
 
+import components.HealthContainer;
 import components.Position;
 
 //Singleton that maintains the meta game state (what level you are on, status, etc) 
@@ -7,7 +8,7 @@ import components.Position;
 class GameState{
     public var currentLevel:Int = null;
     public var levelComplete:Bool = null;
-    public var hp:Int = 100;
+    public var hp:HealthContainer;
     public var playerPosition:Position = null;
     public var debugText:String = "";
     public var xp:Float = 0;

@@ -18,12 +18,17 @@ class UserInterfaceSystem extends System {
 
 	var debugText:h2d.Text;
 	var xpText:h2d.Text;
+	var hpText:h2d.Text;
 	var actionText:h2d.Text;
 
 	public override function update(dT) {
 		setup(gameState, {
+			if(hpText == null){
+				hpText= this.genText(1,10);
+				displayResources.scene.add(hpText);
+			}
 			if (xpText == null) {
-				xpText = this.genText(10, 10);
+				xpText = this.genText(50, 10);
 				displayResources.scene.add(xpText);
 			}
 			if (actionText == null) {
@@ -35,6 +40,7 @@ class UserInterfaceSystem extends System {
 				commandGraphic = new Graphics(displayResources.scene);
 			}
 
+			this.hpText.text = "HP: " + state.hp.hpAmount;
 			this.xpText.text = "Charge: " + state.xp + "%";
 
 			if (state.canPlayerTakeAction) {

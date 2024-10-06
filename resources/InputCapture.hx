@@ -2,7 +2,7 @@ package resources;
 
 import Types.GameAction;
 
-//Singleton that hooks into Heaps.io's keyboard even system and translates it into action enum
+// Singleton that hooks into Heaps.io's keyboard even system and translates it into action enum
 class InputCapture {
 	var keycodeMap:Map<Int, GameAction> = new Map();
 	var actionStatus:Map<GameAction, Bool> = new Map();
@@ -17,7 +17,6 @@ class InputCapture {
 	}
 
 	public function onEvent(event:hxd.Event) {
-		trace(event.keyCode);
 		switch (event.kind) {
 			case EKeyDown:
 				var actionType = keycodeMap.get(event.keyCode);
