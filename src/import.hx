@@ -6,6 +6,7 @@ import Types.BulletType;
 import Types.BulletTargetingPriority;
 import Types.MinionType;
 import Types.QueueType;
+import Types.EnemyType;
 import Constants.*;
 import components.*;
 import resources.*;

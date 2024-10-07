@@ -12,6 +12,7 @@ class Queues {
 	public function initQueues() {
 		queues.set(QueueType.MinionCreationQueue, new Array());
 		queues.set(QueueType.XpQueue, new Array());
+		queues.set(QueueType.EnemyCreationQueue, new Array());
 	}
 
 	public function queue(type:QueueType, request:Dynamic) {

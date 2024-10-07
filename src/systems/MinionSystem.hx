@@ -21,6 +21,11 @@ class MinionSystem extends System {
 		}
 	};
 
+	@:fullFamily var sys:{
+		requires:{},
+		resources:{displayResources:DisplayResources, queues:Queues,inputCapture:InputCapture}
+	}
+
 	var minionDetailsList:Map<MinionType, MinionData> = new std.Map();
 	var mergeActionReset = false;
 
@@ -28,20 +33,20 @@ class MinionSystem extends System {
 		var minionCount = new Map<MinionType, Int>();
 		setup(minions, {
 			iterate(minions, {
-				//Build up minionCount status. TODO: Move into add/remove moments only
+				// Build up minionCount status. TODO: Move into add/remove moments only
 				if (!minionCount.exists(follower.type))
 					minionCount.set(follower.type, 1);
-				else{
+				else {
 					minionCount[follower.type]++;
-					if(minionCount[follower.type] > 5){
-						//state.debugText = "Spacebar to merge!";
+					if (minionCount[follower.type] > 5) {
+						// state.debugText = "Spacebar to merge!";
 						state.canPlayerTakeAction = true;
-					}else{
+					} else {
 						state.canPlayerTakeAction = false;
 					}
 				}
 
-				//Update target velocity for minion. TODO: doesn't need to happen every cycle
+				// Update target velocity for minion. TODO: doesn't need to happen every cycle
 				var vectorY = state.playerPosition.y - position.y + follower.relativePosition.y;
 				var vectorX = state.playerPosition.x - position.x + follower.relativePosition.x;
 				var vector = new Vector(vectorX, vectorY);
@@ -60,10 +65,11 @@ class MinionSystem extends System {
 					}
 				}
 			});
-
+		});
+		setup(sys, {
 			var minionCreationQueue = queues.getQueue(QueueType.MinionCreationQueue);
 			for (req in minionCreationQueue) {
-				//var minionRequest:MinionRequest = req;
+				// var minionRequest:MinionRequest = req;
 				createMinion(req.minionType, req.startPosition, displayResources);
 			}
 			queues.clearQueue(QueueType.MinionCreationQueue);
@@ -72,7 +78,7 @@ class MinionSystem extends System {
 				if (!mergeActionReset) {
 					mergeMinions(minionCount);
 					mergeActionReset = true;
-					//state.debugText = "";
+					// state.debugText = "";
 				}
 			} else {
 				mergeActionReset = false;

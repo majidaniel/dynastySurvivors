@@ -1,5 +1,6 @@
 package systems;
 
+import h3d.Quat;
 import haxe.Constraints.Function;
 import systems.XpSystem.XpGainRequest;
 import systems.XpSystem.XpConsumeRequest;
@@ -9,6 +10,7 @@ import ecs.Universe;
 import ecs.System;
 import Types.CollisionGroup;
 import systems.MinionSystem.MinionRequest;
+import systems.EnemySystem.EnemyCreationRequest;
 
 // System that is responsible for setting up levels & reacting to win conditions
 class GameSystem extends System {
@@ -46,7 +48,7 @@ class GameSystem extends System {
 			this.enemySpawn -= dt;
 			if (enemySpawn < 0) {
 				for (i in 0...Math.ceil(enemyCount / 50) * Math.ceil(enemyCount / 100) * 2) {
-					addEnemy(state.playerPosition, displayResources, queues);
+					addEnemy(EnemyType.BasicFollowEnemy, queues);
 				}
 				enemyCount ++;
 				enemySpawn = enemySpawnCap;
@@ -104,17 +106,8 @@ class GameSystem extends System {
 	}
 
 	// TODO: add types
-	public function addEnemy(playerPosition:Position, displayResources:DisplayResources, queues:Queues) {
-		var enemy = universe.createEntity();
-		var vector:Vector = new Vector(Math.random() - 0.5, Math.random() - 0.5).normalized() * 360;
-		vector = vector.add(playerPosition.vector);
-		universe.setComponents(enemy, new Position(vector.x, vector.y), new Velocity(0, 0), new Sprite(hxd.Res.circle_red, displayResources.scene, 10, 10),
-			new PlayerSeeker(PlayerSeekingType.Linear, Constants.ENEMY_DEFAULT_MAX_SPEED, Constants.ENEMY_DEFAULT_ACCELERATION),
-			new Collidable(CollisionGroup.Enemy, [CollisionGroup.Player], new PendingEffects(ColissionEffectType.Damage, 10), 5), 
-			new HealthContainer(10), new DecomposeEffects([
-				function() {
-					queues.queue(QueueType.XpQueue, new XpGainRequest(5));
-				}
-			]));
+	public function addEnemy(enemyType:EnemyType, queues:Queues) {
+		var req = new EnemyCreationRequest(enemyType);
+		queues.queue(QueueType.EnemyCreationQueue,req);
 	}
 }

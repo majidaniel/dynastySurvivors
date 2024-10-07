@@ -25,7 +25,7 @@ class Main extends hxd.App {
 					systems: [
 						GameSystem,
 						XpSystem,
-						EnemyDecisionSystem,
+						EnemySystem,
 						MinionSystem,
 						BulletSystem,
 						MoveSystem,
