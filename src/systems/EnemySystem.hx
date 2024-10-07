@@ -54,11 +54,11 @@ class EnemySystem extends System {
 					var vectorY = state.playerPosition.y - position.y;
 					var vectorX = state.playerPosition.x - position.x;
 					var normalizedVector = new Vector(vectorX, vectorY).normalized();
-					velocity.vector.x += playerSeeker.acceleration * normalizedVector.x;
-					velocity.vector.y += playerSeeker.acceleration * normalizedVector.y;
+					velocity.vector.x += playerSeeker.acceleration * normalizedVector.x * _dt;
+					velocity.vector.y += playerSeeker.acceleration * normalizedVector.y * _dt;
 
 					if (velocity.vector.length() > playerSeeker.maxSpeed) {
-						var finalNormalizedVector = new Vector(vectorX, vectorY).normalized();
+						var finalNormalizedVector = new Vector(velocity.vector.x, velocity.vector.y).normalized();
 						velocity.vector.x = finalNormalizedVector.x * playerSeeker.maxSpeed;
 						velocity.vector.y = finalNormalizedVector.y * playerSeeker.maxSpeed;
 					}
