@@ -1,10 +1,8 @@
 package systems;
 
-import js.html.SpeechRecognitionResultList;
 import game.MinionData;
 import Types.QueueType;
 import Types.MinionType;
-import js.lib.intl.NumberFormat.CurrencyDisplay;
 import haxe.ds.Map;
 import macros.*;
 

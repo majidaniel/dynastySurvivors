@@ -1,0 +1,10 @@
+[
+    {
+        "type":"BasicFollowEnemy",
+        "maxSpeed":80.0,
+        "acceleration":20.0,
+        "hp":10,
+        "playerDamage":10,
+        "xpValue":5
+    }
+]

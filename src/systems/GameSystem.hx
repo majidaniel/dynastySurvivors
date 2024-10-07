@@ -73,7 +73,7 @@ class GameSystem extends System {
 			final playerObject = universe.createEntity();
 			var hp = new HealthContainer(100);
 			state.hp = hp;
-			final playerPosition = new Position(200, 200);
+			final playerPosition = new Position(Constants.screenSpaceWidth/2, screenSpaceHeight/2);
 			state.playerPosition = playerPosition;
 			universe.setComponents(playerObject, playerPosition, new Velocity(0, 0), new Sprite(hxd.Res.circle_orange, displayResources.scene, 7, 7),
 				new PlayerControlled(),
