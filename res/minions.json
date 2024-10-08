@@ -5,23 +5,58 @@
         "maxSpeed": 200.0,
         "acceleration": 1000.0,
         "radialLevel": 1,
+        "bulletType": "Basic",
         "upgradesTo": {
             "numberToUpgrade": 5,
-            "upgradeMinionType": "ShooterTier2"
+            "upgradeMinionType": "BasicShooter2"
         }
+    },
+    {
+        "type": "BasicShooter2",
+        "reloadSpeed": 0.5,
+        "maxSpeed": 175.0,
+        "acceleration": 1000.0,
+        "radialLevel": 1,
+        "bulletType": "Basic3",
+        "upgradesTo": {
+            "numberToUpgrade": 5,
+            "upgradeMinionType": "BasicShooter3"
+        }
+    },
+    {
+        "type": "BasicShooter3",
+        "reloadSpeed": 0.25,
+        "maxSpeed": 150.0,
+        "acceleration": 1000.0,
+        "radialLevel": 1,
+        "bulletType": "Basic5",
+        "upgradesTo": {
+            "numberToUpgrade": 5,
+            "upgradeMinionType": "BasicShooter4"
+        }
+    },
+    {
+        "type": "BasicShooter4",
+        "reloadSpeed": 0.05,
+        "maxSpeed": 100.0,
+        "acceleration": 1000.0,
+        "radialLevel": 1,
+        "bulletType": "Basic10"
     },
     {
         "type": "ShooterTier2",
         "reloadSpeed": 0.1,
         "maxSpeed": 0.0,
         "acceleration": 10.0,
-        "radialLevel": 10
+        "radialLevel": 10,
+        "bulletType": "Basic"
     },
     {
         "type": "SlowDefender",
         "reloadSpeed": 1.0,
         "maxSpeed": 50.0,
         "acceleration": 20.0,
-        "radialLevel": 2
+        "radialLevel": 2,
+        "bulletType": "Melee"
     }
 ]

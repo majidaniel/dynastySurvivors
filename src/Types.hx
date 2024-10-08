@@ -23,8 +23,11 @@ enum abstract ColissionEffectType(Int) to Int{
 	var FullConsume;
 }
 
-enum abstract BulletType(Int) to Int{
+enum abstract BulletType(String) to String{
 	var Basic;
+	var Basic3;
+	var Basic5;
+	var Basic10;
 	var Melee;
 }
 
@@ -34,6 +37,9 @@ enum abstract BulletTargetingPriority(Int) to Int{
 
 enum abstract MinionType(String) to String{
 	var BasicShooter;
+	var BasicShooter2;
+	var BasicShooter3;
+	var BasicShooter4;
 	var SlowDefender;
 	var ShooterTier2;
 }

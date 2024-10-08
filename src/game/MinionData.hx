@@ -16,6 +16,7 @@ class MinionData {
 
 	public var numberToUpgrade:Int;
 	public var upgradeMinion:MinionType;
+	public var bulletType:BulletType;
 
 	public var type:MinionType;
 
@@ -26,6 +27,7 @@ class MinionData {
 		this.maxSpeed = jsonInput.maxSpeed;
 		this.acceleration = jsonInput.acceleration;
 		this.radialLevel = jsonInput.radialLevel;
+		this.bulletType = jsonInput.bulletType;
 		if (jsonInput.upgradesTo != null) {
 			this.upgradeMinion = jsonInput.upgradesTo.upgradeMinionType;
 			this.numberToUpgrade = jsonInput.upgradesTo.numberToUpgrade;

@@ -21,7 +21,7 @@ class MinionSystem extends System {
 
 	@:fullFamily var sys:{
 		requires:{},
-		resources:{displayResources:DisplayResources, queues:Queues,inputCapture:InputCapture}
+		resources:{displayResources:DisplayResources, queues:Queues, inputCapture:InputCapture}
 	}
 
 	var minionDetailsList:Map<MinionType, MinionData> = new std.Map();
@@ -71,7 +71,7 @@ class MinionSystem extends System {
 				createMinion(req.minionType, req.startPosition, displayResources);
 			}
 			queues.clearQueue(QueueType.MinionCreationQueue);
-
+			mergeMinions(minionCount);
 			if (inputCapture.getActionStatus(GameAction.MergeAction)) {
 				if (!mergeActionReset) {
 					mergeMinions(minionCount);
@@ -103,17 +103,19 @@ class MinionSystem extends System {
 		universe.setComponents(follower, startPosition, new Velocity(0, 0),
 			new PlayerFollower(type, minionData.maxSpeed * (1 + (Math.random() - 0.5) * Constants.MINION_MOVE_VARIANCE), minionData.acceleration,
 				minionData.radialLevel));
-
-		if (type == MinionType.BasicShooter) {
-			universe.setComponents(follower, new Sprite(hxd.Res.circle_green, displayResources.scene, 4, 4),
-				new BulletEmitter(BulletType.Basic, minionData.reloadSpeed));
-		} else if (type == MinionType.SlowDefender) {
-			universe.setComponents(follower, new Sprite(hxd.Res.circle_green, displayResources.scene, 6, 6),
-				new BulletEmitter(BulletType.Melee, minionData.reloadSpeed));
-		} else if (type == MinionType.ShooterTier2) {
-			universe.setComponents(follower, new Sprite(hxd.Res.circle_green, displayResources.scene, 10, 10),
-				new BulletEmitter(BulletType.Basic, minionData.reloadSpeed));
+		universe.setComponents(follower, new BulletEmitter(minionData.bulletType, minionData.reloadSpeed));
+		
+		var circleSize=4;
+		var sprite=hxd.Res.circle_green;
+		switch(type){
+			case MinionType.BasicShooter: circleSize = 4;
+			case MinionType.BasicShooter2: circleSize = 8;
+			case MinionType.BasicShooter3: circleSize = 12;
+			case MinionType.BasicShooter4: circleSize = 30;
+			case MinionType.SlowDefender: circleSize = 6;
+			case MinionType.ShooterTier2: circleSize=10;
 		}
+		universe.setComponents(follower, new Sprite(sprite, displayResources.scene, circleSize, circleSize));
 	}
 
 	function adjustMinionPositions() {

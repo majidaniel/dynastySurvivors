@@ -37,26 +37,40 @@ class BulletSystem extends System {
 
 	public function addBullet(type:BulletType, startX:Float, startY:Float, velocity:Vector, displayResources:DisplayResources) {
 		var bulletSpeed = 1;
-		var decayEffect:DecayOnDistance=null;
+		var decayDistance:Float=0;
 		var sprite:Sprite = null;
-		if (type == BulletType.Melee){
+		if (type == BulletType.Melee) {
 			bulletSpeed = 40;
-			decayEffect = new DecayOnDistance(20);
+			decayDistance = 20;
 			sprite = new Sprite(hxd.Res.circle, displayResources.scene, 10, 10);
-		}
-		else if (type == BulletType.Basic){
+		} else if (type == BulletType.Basic || type == BulletType.Basic3 || type == BulletType.Basic5 || type == BulletType.Basic10) {
 			bulletSpeed = 200;
-			decayEffect = new DecayOnDistance(200);
+			decayDistance=200;
 			sprite = new Sprite(hxd.Res.circle, displayResources.scene, 3, 3);
 		}
 
 		velocity *= bulletSpeed;
 
-		var bullet = universe.createEntity();
-		universe.setComponents(bullet, new Position(startX, startY), new Velocity(velocity.x, velocity.y),
-			sprite,
-			new Collidable(CollisionGroup.PlayerBullet, [CollisionGroup.Enemy], new PendingEffects(ColissionEffectType.Damage, 5), 3), new HealthContainer(1),
-			decayEffect);
+		var velocityArray = [velocity];
+		var scatterArray = [];
+		if(type == BulletType.Basic3){
+			scatterArray = [-15,15];
+		}else if(type == BulletType.Basic5){
+			scatterArray = [-30,-15,15,30];
+		}else if(type == BulletType.Basic10){
+			scatterArray = [-60,-45,-30,-15,15,30,45,60];
+		}
+		for(angle in scatterArray){
+			velocityArray.push(new Vector(velocity.x * Math.cos(angle*Math.PI/180) - velocity.y * Math.sin(angle*Math.PI/180), velocity.x * Math.sin(angle*Math.PI/180) + velocity.y * Math.cos(angle*Math.PI/180)));
+		}
+
+		//TODO: sprite hard coded here, change based on type above
+		for (vel in velocityArray) {
+			var bullet = universe.createEntity();
+			universe.setComponents(bullet, new Position(startX, startY), new Velocity(vel.x, vel.y), new Sprite(hxd.Res.circle, displayResources.scene, 3, 3),
+				new Collidable(CollisionGroup.PlayerBullet, [CollisionGroup.Enemy], new PendingEffects(ColissionEffectType.Damage, 5), 3),
+				new HealthContainer(1), new DecayOnDistance(decayDistance));
+		}
 	}
 
 	private function determineTargetPosition(type:BulletTargetingPriority, originPosition:Position, targetPositions:Array<Position>):Position {
