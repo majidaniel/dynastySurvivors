@@ -1,7 +1,7 @@
 [
     {
         "type": "BasicShooter",
-        "reloadSpeed": 0.75,
+        "reloadSpeed": 1,
         "maxSpeed": 200.0,
         "acceleration": 1000.0,
         "radialLevel": 1,
@@ -16,10 +16,10 @@
         "reloadSpeed": 0.5,
         "maxSpeed": 175.0,
         "acceleration": 1000.0,
-        "radialLevel": 1,
+        "radialLevel": 2,
         "bulletType": "Basic3",
         "upgradesTo": {
-            "numberToUpgrade": 5,
+            "numberToUpgrade": 3,
             "upgradeMinionType": "BasicShooter3"
         }
     },
@@ -28,19 +28,19 @@
         "reloadSpeed": 0.25,
         "maxSpeed": 150.0,
         "acceleration": 1000.0,
-        "radialLevel": 1,
+        "radialLevel": 3,
         "bulletType": "Basic5",
         "upgradesTo": {
-            "numberToUpgrade": 5,
+            "numberToUpgrade": 3,
             "upgradeMinionType": "BasicShooter4"
         }
     },
     {
         "type": "BasicShooter4",
-        "reloadSpeed": 0.05,
+        "reloadSpeed": 0.1,
         "maxSpeed": 100.0,
         "acceleration": 1000.0,
-        "radialLevel": 1,
+        "radialLevel": 4,
         "bulletType": "Basic10"
     },
     {

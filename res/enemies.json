@@ -5,6 +5,21 @@
         "acceleration":75.0,
         "hp":10,
         "playerDamage":10,
-        "xpValue":50
+        "xpValue":0,
+        "spawn":"XpGain",
+        "collisionGroup":"Enemy",
+        "collisionSize":5,
+        "spawnOdds":0.25
+    },
+    {
+        "type":"XpGain",
+        "maxSpeed":0,
+        "acceleration":0,
+        "hp":1,
+        "playerDamage":0,
+        "xpValue":100,
+        "collisionGroup":"Pickup",
+        "collisionSize":15,
+        "spawnOdds":1
     }
 ]

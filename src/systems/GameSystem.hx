@@ -55,11 +55,11 @@ class GameSystem extends System {
 				//enemySpawn = enemySpawnCap - 0.25 * (enemyCount % 50 / 50);
 			}
 
-			this.xpGain -= dt;
+			/*this.xpGain -= dt;
 			if (this.xpGain < 0) {
 				queues.queue(QueueType.XpQueue, new XpGainRequest(xpGainAmount));
 				this.xpGain = this.xpGainCap;
-			}
+			}*/
 			if (state.xp >= 100) {
 				queues.queue(QueueType.XpQueue, new XpConsumeRequest(100, function() {
 					this.addMinion(MinionType.BasicShooter, state.playerPosition.x, state.playerPosition.y, queues);
@@ -77,7 +77,9 @@ class GameSystem extends System {
 			state.playerPosition = playerPosition;
 			universe.setComponents(playerObject, playerPosition, new Velocity(0, 0), new Sprite(hxd.Res.circle_orange, displayResources.scene, 7, 7),
 				new PlayerControlled(),
-				new Collidable(CollisionGroup.Player, [CollisionGroup.Enemy], new PendingEffects(ColissionEffectType.FullConsume, 10000), 3.5), hp);
+				new Collidable(CollisionGroup.Player, [CollisionGroup.Enemy,CollisionGroup.Pickup], new PendingEffects(ColissionEffectType.FullConsume, 10000), 3.5),
+				hp);
+			
 			for (i in 0...initialMinions)
 				addMinion(MinionType.BasicShooter, state.playerPosition.x, state.playerPosition.y, queues);
 		});

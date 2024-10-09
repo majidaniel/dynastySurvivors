@@ -8,10 +8,11 @@ enum abstract GameAction(Int) to Int {
 	var MergeAction;
 }
 
-enum abstract CollisionGroup(Int) to Int {
+enum abstract CollisionGroup(String) to String {
 	var Player;
 	var Enemy;
 	var PlayerBullet;
+	var Pickup;
 }
 
 enum abstract PlayerSeekingType(Int) to Int{
@@ -51,5 +52,6 @@ enum abstract QueueType(String) to String{
 }
 
 enum abstract EnemyType(String) to String{
+	var XpGain;
 	var BasicFollowEnemy;
 }

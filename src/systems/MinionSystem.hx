@@ -31,17 +31,17 @@ class MinionSystem extends System {
 		var minionCount = new Map<MinionType, Int>();
 		setup(minions, {
 			iterate(minions, {
-				// Build up minionCount status. TODO: Move into add/remove moments only
+				//TODO: Move to onadded vs every loop
 				if (!minionCount.exists(follower.type))
 					minionCount.set(follower.type, 1);
 				else {
 					minionCount[follower.type]++;
-					if (minionCount[follower.type] > 5) {
+					/*if (minionCount[follower.type] > 5) {
 						// state.debugText = "Spacebar to merge!";
 						state.canPlayerTakeAction = true;
 					} else {
 						state.canPlayerTakeAction = false;
-					}
+					}*/
 				}
 
 				// Update target velocity for minion. TODO: doesn't need to happen every cycle
@@ -72,7 +72,7 @@ class MinionSystem extends System {
 			}
 			queues.clearQueue(QueueType.MinionCreationQueue);
 			mergeMinions(minionCount);
-			if (inputCapture.getActionStatus(GameAction.MergeAction)) {
+			/*if (inputCapture.getActionStatus(GameAction.MergeAction)) {
 				if (!mergeActionReset) {
 					mergeMinions(minionCount);
 					mergeActionReset = true;
@@ -80,7 +80,7 @@ class MinionSystem extends System {
 				}
 			} else {
 				mergeActionReset = false;
-			}
+			}*/
 		});
 	}
 
