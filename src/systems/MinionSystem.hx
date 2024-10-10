@@ -31,16 +31,16 @@ class MinionSystem extends System {
 		var minionCount = new Map<MinionType, Int>();
 		setup(minions, {
 			iterate(minions, {
-				//TODO: Move to onadded vs every loop
+				// TODO: Move to onadded vs every loop
 				if (!minionCount.exists(follower.type))
 					minionCount.set(follower.type, 1);
 				else {
 					minionCount[follower.type]++;
 					/*if (minionCount[follower.type] > 5) {
-						// state.debugText = "Spacebar to merge!";
-						state.canPlayerTakeAction = true;
-					} else {
-						state.canPlayerTakeAction = false;
+							// state.debugText = "Spacebar to merge!";
+							state.canPlayerTakeAction = true;
+						} else {
+							state.canPlayerTakeAction = false;
 					}*/
 				}
 
@@ -73,13 +73,13 @@ class MinionSystem extends System {
 			queues.clearQueue(QueueType.MinionCreationQueue);
 			mergeMinions(minionCount);
 			/*if (inputCapture.getActionStatus(GameAction.MergeAction)) {
-				if (!mergeActionReset) {
-					mergeMinions(minionCount);
-					mergeActionReset = true;
-					// state.debugText = "";
-				}
-			} else {
-				mergeActionReset = false;
+					if (!mergeActionReset) {
+						mergeMinions(minionCount);
+						mergeActionReset = true;
+						// state.debugText = "";
+					}
+				} else {
+					mergeActionReset = false;
 			}*/
 		});
 	}
@@ -104,16 +104,22 @@ class MinionSystem extends System {
 			new PlayerFollower(type, minionData.maxSpeed * (1 + (Math.random() - 0.5) * Constants.MINION_MOVE_VARIANCE), minionData.acceleration,
 				minionData.radialLevel));
 		universe.setComponents(follower, new BulletEmitter(minionData.bulletType, minionData.reloadSpeed));
-		
-		var circleSize=4;
-		var sprite=hxd.Res.circle_green;
-		switch(type){
-			case MinionType.BasicShooter: circleSize = 4;
-			case MinionType.BasicShooter2: circleSize = 8;
-			case MinionType.BasicShooter3: circleSize = 12;
-			case MinionType.BasicShooter4: circleSize = 30;
-			case MinionType.SlowDefender: circleSize = 6;
-			case MinionType.ShooterTier2: circleSize=10;
+
+		var circleSize = 4;
+		var sprite = hxd.Res.circle_green;
+		switch (type) {
+			case MinionType.BasicShooter:
+				circleSize = 4;
+			case MinionType.BasicShooter2:
+				circleSize = 8;
+			case MinionType.BasicShooter3:
+				circleSize = 12;
+			case MinionType.BasicShooter4:
+				circleSize = 30;
+			case MinionType.SlowDefender:
+				circleSize = 6;
+			case MinionType.ShooterTier2:
+				circleSize = 10;
 		}
 		universe.setComponents(follower, new Sprite(sprite, displayResources.scene, circleSize, circleSize));
 	}
@@ -151,18 +157,20 @@ class MinionSystem extends System {
 		setup(minions, {
 			for (type => count in minionCount) {
 				if (count > minionDetailsList[type].numberToUpgrade) {
-					var req:MinionRequest = {
-						minionType: minionDetailsList[type].upgradeMinion,
-						startPosition: new Position(state.playerPosition.x, state.playerPosition.y)
-					};
-					queues.queue(QueueType.MinionCreationQueue, req);
-					var destroyCount = minionDetailsList[type].numberToUpgrade;
-					iterate(minions, entity -> {
-						if (follower.type == type && destroyCount > 0) {
-							universe.setComponents(entity, new Decompose());
-							destroyCount--;
-						}
-					});
+					if (minionDetailsList[type].upgradeQuantityFloor == null || count > minionDetailsList[type].upgradeQuantityFloor) {
+						var req:MinionRequest = {
+							minionType: minionDetailsList[type].upgradeMinion,
+							startPosition: new Position(state.playerPosition.x, state.playerPosition.y)
+						};
+						queues.queue(QueueType.MinionCreationQueue, req);
+						var destroyCount = minionDetailsList[type].numberToUpgrade;
+						iterate(minions, entity -> {
+							if (follower.type == type && destroyCount > 0) {
+								universe.setComponents(entity, new Decompose());
+								destroyCount--;
+							}
+						});
+					}
 				}
 			}
 		});

@@ -20,6 +20,8 @@ class MinionData {
 
 	public var type:MinionType;
 
+	public var upgradeQuantityFloor:Float;
+
 	public function new(jsonInput:Dynamic) {
 		this.type = jsonInput.type;
 
@@ -31,6 +33,7 @@ class MinionData {
 		if (jsonInput.upgradesTo != null) {
 			this.upgradeMinion = jsonInput.upgradesTo.upgradeMinionType;
 			this.numberToUpgrade = jsonInput.upgradesTo.numberToUpgrade;
+			this.upgradeQuantityFloor = jsonInput.upgradesTo.upgradeQuantityFloor;
 		}
 	}
 }

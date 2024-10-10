@@ -8,7 +8,8 @@
         "bulletType": "Basic",
         "upgradesTo": {
             "numberToUpgrade": 5,
-            "upgradeMinionType": "BasicShooter2"
+            "upgradeMinionType": "BasicShooter2",
+            "upgradeQuantityFloor":15
         }
     },
     {
@@ -20,7 +21,8 @@
         "bulletType": "Basic3",
         "upgradesTo": {
             "numberToUpgrade": 3,
-            "upgradeMinionType": "BasicShooter3"
+            "upgradeMinionType": "BasicShooter3",
+            "upgradeQuantityFloor":6
         }
     },
     {
@@ -32,7 +34,8 @@
         "bulletType": "Basic5",
         "upgradesTo": {
             "numberToUpgrade": 3,
-            "upgradeMinionType": "BasicShooter4"
+            "upgradeMinionType": "BasicShooter4",
+            "upgradeQuantityFloor":6
         }
     },
     {
