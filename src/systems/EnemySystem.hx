@@ -1,6 +1,5 @@
 package systems;
 
-import haxe.macro.Expr.Constant;
 import h3d.Vector;
 import resources.GameState;
 import ecs.Universe;
@@ -8,7 +7,6 @@ import resources.DisplayResources;
 import ecs.System;
 import components.*;
 import Types.CollisionGroup;
-import h2d.Text;
 import systems.XpSystem.XpGainRequest;
 import game.EnemyData;
 import haxe.Constraints.Function;
@@ -67,6 +65,8 @@ class EnemySystem extends System {
 			});
 		});
 		setup(sys, {
+			generateEnemies(_dt,queues);
+
 			var enemyCreationQueue = queues.getQueue(QueueType.EnemyCreationQueue);
 			for (req in enemyCreationQueue) {
 				if (req.startPosition == null) {
@@ -80,6 +80,27 @@ class EnemySystem extends System {
 			}
 			queues.clearQueue(QueueType.EnemyCreationQueue);
 		});
+	}
+
+	var enemySpawnCap:Float = .5;
+	var enemySpawn:Float = 0;
+	var enemyCount:Int = 1;
+
+	function generateEnemies(_dt:Float,queues:Queues){
+		this.enemySpawn -= _dt;
+			if (enemySpawn < 0) {
+				for (i in 0...Math.ceil(enemyCount / 50) * Math.ceil(enemyCount / 100) * 4) {
+					addEnemy(EnemyType.BasicFollowEnemy, queues);
+				}
+				enemyCount ++;
+				enemySpawn = enemySpawnCap;
+			}
+	}
+
+	// TODO: add types
+	private function addEnemy(enemyType:EnemyType, queues:Queues) {
+		var req = new EnemyCreationRequest(enemyType);
+		queues.queue(QueueType.EnemyCreationQueue,req);
 	}
 
 	function createEnemy(enemyType:EnemyType, position:Position, displayResources:DisplayResources, queues:Queues) {
@@ -96,11 +117,11 @@ class EnemySystem extends System {
 		}
 
 		if (enemyData.spawn != null) {
-			if(enemyData.spawnOdds == null || Math.random() < enemyData.spawnOdds)
-			decomposeEffects.push(function() {
-				var req = new EnemyCreationRequest(enemyData.spawn, newPosition);
-				queues.queue(QueueType.EnemyCreationQueue, req);
-			});
+			if (enemyData.spawnOdds == null || Math.random() < enemyData.spawnOdds)
+				decomposeEffects.push(function() {
+					var req = new EnemyCreationRequest(enemyData.spawn, newPosition);
+					queues.queue(QueueType.EnemyCreationQueue, req);
+				});
 		}
 
 		var sprite;
@@ -112,8 +133,10 @@ class EnemySystem extends System {
 		}
 
 		universe.setComponents(enemy, newPosition, new Velocity(0, 0), new Sprite(sprite, displayResources.scene, 10, 10),
-			new PlayerSeeker(PlayerSeekingType.Linear, enemyData.maxSpeed, enemyData.acceleration),
-			new Collidable(enemyData.collisionGroup, [CollisionGroup.Player], new PendingEffects(ColissionEffectType.Damage, enemyData.playerDamage), enemyData.collisionSize),
+			new PlayerSeeker(PlayerSeekingType.Linear, enemyData.maxSpeed * Constants.ENEMY_MAX_SPEED_VARIANCE, 
+				enemyData.acceleration * Constants.ENEMY_ACCELERATION_VARIANCE),
+			new Collidable(enemyData.collisionGroup, [CollisionGroup.Player], new PendingEffects(ColissionEffectType.Damage, enemyData.playerDamage),
+				enemyData.collisionSize),
 			new HealthContainer(enemyData.hp), new DecomposeEffects(decomposeEffects));
 	}
 }

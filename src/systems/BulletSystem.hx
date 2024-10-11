@@ -68,7 +68,7 @@ class BulletSystem extends System {
 		for (vel in velocityArray) {
 			var bullet = universe.createEntity();
 			universe.setComponents(bullet, new Position(startX, startY), new Velocity(vel.x, vel.y), new Sprite(hxd.Res.circle, displayResources.scene, 3, 3),
-				new Collidable(CollisionGroup.PlayerBullet, [CollisionGroup.Enemy], new PendingEffects(ColissionEffectType.Damage, 5), 3),
+				new Collidable(CollisionGroup.PlayerBullet, [CollisionGroup.Enemy], new PendingEffects(ColissionEffectType.Damage, 10), 3),
 				new HealthContainer(1), new DecayOnDistance(decayDistance));
 		}
 	}
