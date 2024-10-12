@@ -1,8 +1,6 @@
 package systems;
 
-import h3d.Quat;
 import haxe.Constraints.Function;
-import systems.XpSystem.XpGainRequest;
 import systems.XpSystem.XpConsumeRequest;
 import Types.QueueType;
 import Types.MinionType;
@@ -26,10 +24,6 @@ class GameSystem extends System {
 		resources:{}
 	}
 
-	var enemySpawnCap:Float = .5;
-	var enemySpawn:Float = 0;
-	var enemyCount:Int = 1;
-
 	var xpGainCap:Float = 1;
 	var xpGain:Float = 0;
 
@@ -43,16 +37,6 @@ class GameSystem extends System {
 			if (state.currentLevel == null) {
 				initTestScene(displayResources);
 				state.currentLevel = 1;
-			}
-
-			this.enemySpawn -= dt;
-			if (enemySpawn < 0) {
-				for (i in 0...Math.ceil(enemyCount / 50) * Math.ceil(enemyCount / 100) * 2) {
-					addEnemy(EnemyType.BasicFollowEnemy, queues);
-				}
-				enemyCount ++;
-				enemySpawn = enemySpawnCap;
-				//enemySpawn = enemySpawnCap - 0.25 * (enemyCount % 50 / 50);
 			}
 
 			/*this.xpGain -= dt;
@@ -107,9 +91,4 @@ class GameSystem extends System {
 		queues.queue(QueueType.MinionCreationQueue, req);
 	}
 
-	// TODO: add types
-	public function addEnemy(enemyType:EnemyType, queues:Queues) {
-		var req = new EnemyCreationRequest(enemyType);
-		queues.queue(QueueType.EnemyCreationQueue,req);
-	}
 }
