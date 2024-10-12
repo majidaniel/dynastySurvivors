@@ -29,7 +29,7 @@
     },
     {
         "type": "BasicShooter3",
-        "reloadSpeed": 0.25,
+        "reloadSpeed": 0.5,
         "maxSpeed": 150.0,
         "acceleration": 1000.0,
         "radialLevel": 3,
@@ -43,7 +43,7 @@
     },
     {
         "type": "BasicShooter4",
-        "reloadSpeed": 0.1,
+        "reloadSpeed": 0.25,
         "maxSpeed": 100.0,
         "acceleration": 1000.0,
         "radialLevel": 4,

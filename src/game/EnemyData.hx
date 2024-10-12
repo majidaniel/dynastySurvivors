@@ -12,6 +12,7 @@ class EnemyData {
 	public var collisionSize:Float;
 	public var spawnOdds:Float;
 	public var decayTime:Float;
+	public var threatPoints:Float=0;
 
 	public function new(jsonInput:Dynamic) {
 		this.type = jsonInput.type;
@@ -25,5 +26,7 @@ class EnemyData {
 		this.collisionSize = jsonInput.collisionSize;
 		this.spawnOdds = jsonInput.spawnOdds;
 		this.decayTime = jsonInput.decayTime;
+		if(jsonInput.threatPoints != null)
+			this.threatPoints = jsonInput.threatPoints;
 	}
 }

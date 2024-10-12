@@ -1,7 +1,7 @@
 [
     {
         "type":"BasicFollowEnemy",
-        "maxSpeed":50.0,
+        "maxSpeed":75.0,
         "acceleration":25.0,
         "hp":10,
         "playerDamage":10,
@@ -9,7 +9,21 @@
         "spawn":"XpGain",
         "collisionGroup":"Enemy",
         "collisionSize":5,
-        "spawnOdds":0.125
+        "spawnOdds":0.1,
+        "threatPoints":1
+    },
+    {
+        "type":"LargeFollowEnemy",
+        "maxSpeed":35.0,
+        "acceleration":15.0,
+        "hp":200,
+        "playerDamage":10,
+        "xpValue":0,
+        "spawn":"XpGain",
+        "collisionGroup":"Enemy",
+        "collisionSize":10,
+        "spawnOdds":1,
+        "threatPoints":3
     },
     {
         "type":"XpGain",
@@ -21,6 +35,7 @@
         "collisionGroup":"Pickup",
         "collisionSize":15,
         "spawnOdds":1,
-        "decayTime":10
+        "decayTime":10,
+        "threatPoints":0
     }
 ]

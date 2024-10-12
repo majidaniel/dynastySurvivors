@@ -35,6 +35,10 @@ class UserInterfaceSystem extends System {
 				actionText = this.genText(10, 30);
 				displayResources.scene.add(actionText);
 			}
+			if(debugText == null){
+				debugText = this.genText(10,400);
+				displayResources.scene.add(debugText);
+			}
 
 			if (commandGraphic == null) {
 				commandGraphic = new Graphics(displayResources.scene);
@@ -48,7 +52,10 @@ class UserInterfaceSystem extends System {
 			} else {
 				this.actionText.text = "";
 			}
-			// debugText.text = state.debugText;
+			 debugText.text = "";
+			 for(k=>v in state.debugMap){
+				debugText.text += '$k: $v, ';
+			 }
 
 			debugStuff(displayResources);
 			// debugText.text = state.debugText;

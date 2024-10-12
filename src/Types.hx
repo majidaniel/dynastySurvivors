@@ -54,4 +54,5 @@ enum abstract QueueType(String) to String{
 enum abstract EnemyType(String) to String{
 	var XpGain;
 	var BasicFollowEnemy;
+	var LargeFollowEnemy;
 }

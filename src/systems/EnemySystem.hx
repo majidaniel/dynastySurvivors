@@ -25,7 +25,12 @@ class EnemyCreationRequest {
 // System that is responsible for setting up levels & reacting to win conditions
 class EnemySystem extends System {
 	@:fullFamily var enemies:{
-		requires:{playerSeeker:PlayerSeeker, velocity:Velocity, position:Position},
+		requires:{
+			playerSeeker:PlayerSeeker,
+			velocity:Velocity,
+			position:Position,
+			threatGenerator:ThreatGenerator
+		},
 		resources:{state:GameState, displayResources:DisplayResources, queues:Queues}
 	};
 
@@ -47,8 +52,10 @@ class EnemySystem extends System {
 	}
 
 	override function update(_dt:Float) {
+		var threatOnField:Float = 0;
 		setup(enemies, {
 			iterate(enemies, {
+				threatOnField += threatGenerator.threatLevel;
 				if (playerSeeker.seekingType == PlayerSeekingType.Linear) {
 					var vectorY = state.playerPosition.y - position.y;
 					var vectorX = state.playerPosition.x - position.x;
@@ -63,9 +70,10 @@ class EnemySystem extends System {
 					}
 				}
 			});
+			state.debugMap['threatOnField'] = '$threatOnField';
 		});
 		setup(sys, {
-			generateEnemies(_dt, queues);
+			generateEnemies(_dt, queues, threatOnField);
 
 			var enemyCreationQueue = queues.getQueue(QueueType.EnemyCreationQueue);
 			for (req in enemyCreationQueue) {
@@ -90,19 +98,37 @@ class EnemySystem extends System {
 		});
 	}
 
-	var enemySpawnCap:Float = .5;
+	var enemySpawnCap:Float = 1.0;
 	var enemySpawn:Float = 0;
 	var enemyCount:Int = 1;
 
-	function generateEnemies(_dt:Float, queues:Queues) {
+	var initialThreat = 10;
+	var threatScaling:Float = 1;
+	var ticksElapsed = 0;
+
+	function generateEnemies(_dt:Float, queues:Queues, threatOnField:Float) {
 		this.enemySpawn -= _dt;
 		if (enemySpawn < 0) {
-			for (i in 0...Math.ceil(enemyCount / 50) * Math.ceil(enemyCount / 100) * 4) {
-				addEnemy(EnemyType.BasicFollowEnemy, queues);
+			var maxThreat = (initialThreat + threatScaling * ticksElapsed);
+			var deltaThreat = maxThreat - threatOnField;
+
+			while (deltaThreat > 0) {
+				var type = determineEnemyType(maxThreat);
+				addEnemy(type, queues);
+				deltaThreat -= enemyDetailsList[type].threatPoints;
 			}
-			enemyCount++;
+
 			enemySpawn = enemySpawnCap;
+			ticksElapsed++;
 		}
+	}
+
+	var enemiesInLevel = [EnemyType.BasicFollowEnemy, EnemyType.LargeFollowEnemy];
+	var threatSelection:Float = 0.01;
+
+	function determineEnemyType(maxThreat:Float) {
+		var randThreat:Float = Math.random() * threatSelection * maxThreat;
+		return enemiesInLevel[Math.floor(Math.min(enemiesInLevel.length-1, randThreat))];
 	}
 
 	// TODO: add types
@@ -133,19 +159,22 @@ class EnemySystem extends System {
 		}
 
 		var sprite;
+		var spriteSize:Int;
 		switch (enemyType) {
 			case EnemyType.BasicFollowEnemy:
-				sprite = hxd.Res.circle_red;
+				sprite = hxd.Res.circle_red; spriteSize=10;
+			case EnemyType.LargeFollowEnemy:
+				sprite = hxd.Res.circle_red; spriteSize=20;
 			case EnemyType.XpGain:
-				sprite = hxd.Res.diamond_blue;
+				sprite = hxd.Res.diamond_blue; spriteSize=10;
 		}
 
-		universe.setComponents(enemy, newPosition, new Velocity(0, 0), new Sprite(sprite, displayResources.scene, 10, 10),
+		universe.setComponents(enemy, newPosition, new Velocity(0, 0), new Sprite(sprite, displayResources.scene, spriteSize, spriteSize),
 			new PlayerSeeker(PlayerSeekingType.Linear, enemyData.maxSpeed * (1 + (Math.random() - 0.5) * Constants.ENEMY_MAX_SPEED_VARIANCE),
 				enemyData.acceleration * (1 + (Math.random() - 0.5) * Constants.ENEMY_ACCELERATION_VARIANCE)),
 			new Collidable(enemyData.collisionGroup, [CollisionGroup.Player], new PendingEffects(ColissionEffectType.Damage, enemyData.playerDamage),
 				enemyData.collisionSize),
-			new HealthContainer(enemyData.hp), new DecomposeEffects(decomposeEffects));
+			new HealthContainer(enemyData.hp), new DecomposeEffects(decomposeEffects), new ThreatGenerator(enemyData.threatPoints));
 
 		if (enemyData.decayTime != null) {
 			universe.setComponents(enemy, new DecayOnTime(enemyData.decayTime));

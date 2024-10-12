@@ -30,19 +30,17 @@ class MinionSystem extends System {
 	override function update(_dt:Float) {
 		var minionCount = new Map<MinionType, Int>();
 		setup(minions, {
+			var mC = 0;
+			var debug_DPS:Float = 0;
 			iterate(minions, {
 				// TODO: Move to onadded vs every loop
 				if (!minionCount.exists(follower.type))
 					minionCount.set(follower.type, 1);
 				else {
 					minionCount[follower.type]++;
-					/*if (minionCount[follower.type] > 5) {
-							// state.debugText = "Spacebar to merge!";
-							state.canPlayerTakeAction = true;
-						} else {
-							state.canPlayerTakeAction = false;
-					}*/
 				}
+				debug_DPS += 1 / minionDetailsList[follower.type].reloadSpeed * Constants.BASE_BULLET_DAMAGE;
+				mC++;
 
 				// Update target velocity for minion. TODO: doesn't need to happen every cycle
 				var vectorY = state.playerPosition.y - position.y + follower.relativePosition.y;
@@ -63,6 +61,8 @@ class MinionSystem extends System {
 					}
 				}
 			});
+			state.debugMap['minion count'] = '$mC';
+			state.debugMap['DPS'] = '$debug_DPS';
 		});
 		setup(sys, {
 			var minionCreationQueue = queues.getQueue(QueueType.MinionCreationQueue);
@@ -157,12 +157,12 @@ class MinionSystem extends System {
 		setup(minions, {
 			for (type => count in minionCount) {
 				if (count > minionDetailsList[type].numberToUpgrade) {
-					if(minionDetailsList[type].upgradeScaffoldingCount != null){
+					if (minionDetailsList[type].upgradeScaffoldingCount != null) {
 						var nextTierCount:Float = 0;
-						if(minionCount.exists(minionDetailsList[type].upgradeMinion)){
+						if (minionCount.exists(minionDetailsList[type].upgradeMinion)) {
 							nextTierCount = minionCount[minionDetailsList[type].upgradeMinion] * minionDetailsList[type].upgradeScaffoldingCount;
 						}
-						if(count < nextTierCount)
+						if (count < nextTierCount)
 							continue;
 					}
 

@@ -9,7 +9,7 @@ class BulletSystem extends System {
 		resources:{state:GameState, displayResources:DisplayResources}
 	};
 	@:fullFamily var enemyList:{
-		requires:{playerSeeker:PlayerSeeker, position:Position, hp:HealthContainer},
+		requires:{playerSeeker:PlayerSeeker, position:Position, hp:HealthContainer, threatGenerator:ThreatGenerator},
 		resources:{state:GameState}
 	}
 
@@ -95,7 +95,8 @@ class BulletSystem extends System {
 		enemyPositions = new Array();
 		setup(enemyList, {
 			iterate(enemyList, {
-				enemyPositions.push(position);
+				if(threatGenerator.threatLevel > 0)
+					enemyPositions.push(position);
 			});
 		});
 	}
