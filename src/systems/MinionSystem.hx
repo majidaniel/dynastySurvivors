@@ -157,6 +157,15 @@ class MinionSystem extends System {
 		setup(minions, {
 			for (type => count in minionCount) {
 				if (count > minionDetailsList[type].numberToUpgrade) {
+					if(minionDetailsList[type].upgradeScaffoldingCount != null){
+						var nextTierCount:Float = 0;
+						if(minionCount.exists(minionDetailsList[type].upgradeMinion)){
+							nextTierCount = minionCount[minionDetailsList[type].upgradeMinion] * minionDetailsList[type].upgradeScaffoldingCount;
+						}
+						if(count < nextTierCount)
+							continue;
+					}
+
 					if (minionDetailsList[type].upgradeQuantityFloor == null || count > minionDetailsList[type].upgradeQuantityFloor) {
 						var req:MinionRequest = {
 							minionType: minionDetailsList[type].upgradeMinion,

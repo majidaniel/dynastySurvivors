@@ -16,4 +16,6 @@ class Constants{
 	public static var ENEMY_ACCELERATION_VARIANCE = 0.5;
 	public static var ENEMY_MAX_SPEED_VARIANCE = 0.5;
 
+	public static var BASE_BULLET_DAMAGE = 10;
+
 }
