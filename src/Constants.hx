@@ -13,7 +13,7 @@ class Constants{
 	public static var MINION_DISTANCE_PER_RADIAL_LEVEL = 15;
 	public static var MINION_RADIAL_DISTANCE_RATIO = 0.01;
 
-	public static var ENEMY_ACCELERATION_VARIANCE = 0.1;
-	public static var ENEMY_MAX_SPEED_VARIANCE = 0.1;
+	public static var ENEMY_ACCELERATION_VARIANCE = 0.5;
+	public static var ENEMY_MAX_SPEED_VARIANCE = 0.5;
 
 }

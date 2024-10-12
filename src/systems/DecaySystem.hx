@@ -5,6 +5,10 @@ class DecaySystem extends System {
 		requires:{decayOnDistance:DecayOnDistance, position:Position},
 		resources:{}
 	};
+	@:fullFamily var decayByTime:{
+		requires:{decayOnTime:DecayOnTime},
+		resources:{}
+	};
 
 	override function update(_dt:Float) {
 		iterate(decayByDistance, entity -> {
@@ -15,6 +19,12 @@ class DecaySystem extends System {
 			if (decayOnDistance.distanceRemaining <= 0)
 				universe.setComponents(entity, new Decompose());
             decayOnDistance.lastPosition = new Position(position.x,position.y);
+		});
+		iterate(decayByTime, entity -> {
+			decayOnTime.timeRemaining -= _dt;
+			if(decayOnTime.timeRemaining <= 0){
+				universe.setComponents(entity, new Decompose());
+			}
 		});
 	}
 }

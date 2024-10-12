@@ -65,15 +65,23 @@ class EnemySystem extends System {
 			});
 		});
 		setup(sys, {
-			generateEnemies(_dt,queues);
+			generateEnemies(_dt, queues);
 
 			var enemyCreationQueue = queues.getQueue(QueueType.EnemyCreationQueue);
 			for (req in enemyCreationQueue) {
 				if (req.startPosition == null) {
-					var vector:Vector = new Vector(Math.random() - 0.5,
+					var vector:Vector;
+					/*var vector:Vector = new Vector(Math.random() - 0.5,
 						Math.random() - 0.5).normalized() * Math.sqrt(Constants.screenSpaceWidth * Constants.screenSpaceWidth / 4
 							+ Constants.screenSpaceHeight * Constants.screenSpaceHeight / 4);
-					vector = vector.add(new Vector(Constants.screenSpaceWidth / 2, Constants.screenSpaceHeight / 2));
+					 */
+					if (Math.random() < 0.5) {
+						vector = new Vector(Math.random() < 0.5 ? 0 : Constants.screenSpaceWidth, Math.random() * Constants.screenSpaceHeight);
+					} else {
+						vector = new Vector(Math.random() * Constants.screenSpaceWidth, Math.random() < 0.5 ? 0 : Constants.screenSpaceHeight);
+					}
+
+					// vector = vector.add(new Vector(Constants.screenSpaceWidth / 2, Constants.screenSpaceHeight / 2));
 					req.startPosition = new Position(vector.x, vector.y);
 				}
 				createEnemy(req.enemyType, req.startPosition, displayResources, queues);
@@ -86,21 +94,21 @@ class EnemySystem extends System {
 	var enemySpawn:Float = 0;
 	var enemyCount:Int = 1;
 
-	function generateEnemies(_dt:Float,queues:Queues){
+	function generateEnemies(_dt:Float, queues:Queues) {
 		this.enemySpawn -= _dt;
-			if (enemySpawn < 0) {
-				for (i in 0...Math.ceil(enemyCount / 50) * Math.ceil(enemyCount / 100) * 4) {
-					addEnemy(EnemyType.BasicFollowEnemy, queues);
-				}
-				enemyCount ++;
-				enemySpawn = enemySpawnCap;
+		if (enemySpawn < 0) {
+			for (i in 0...Math.ceil(enemyCount / 50) * Math.ceil(enemyCount / 100) * 4) {
+				addEnemy(EnemyType.BasicFollowEnemy, queues);
 			}
+			enemyCount++;
+			enemySpawn = enemySpawnCap;
+		}
 	}
 
 	// TODO: add types
 	private function addEnemy(enemyType:EnemyType, queues:Queues) {
 		var req = new EnemyCreationRequest(enemyType);
-		queues.queue(QueueType.EnemyCreationQueue,req);
+		queues.queue(QueueType.EnemyCreationQueue, req);
 	}
 
 	function createEnemy(enemyType:EnemyType, position:Position, displayResources:DisplayResources, queues:Queues) {
@@ -133,10 +141,14 @@ class EnemySystem extends System {
 		}
 
 		universe.setComponents(enemy, newPosition, new Velocity(0, 0), new Sprite(sprite, displayResources.scene, 10, 10),
-			new PlayerSeeker(PlayerSeekingType.Linear, enemyData.maxSpeed * Constants.ENEMY_MAX_SPEED_VARIANCE, 
-				enemyData.acceleration * Constants.ENEMY_ACCELERATION_VARIANCE),
+			new PlayerSeeker(PlayerSeekingType.Linear, enemyData.maxSpeed * (1 + (Math.random() - 0.5) * Constants.ENEMY_MAX_SPEED_VARIANCE),
+				enemyData.acceleration * (1 + (Math.random() - 0.5) * Constants.ENEMY_ACCELERATION_VARIANCE)),
 			new Collidable(enemyData.collisionGroup, [CollisionGroup.Player], new PendingEffects(ColissionEffectType.Damage, enemyData.playerDamage),
 				enemyData.collisionSize),
 			new HealthContainer(enemyData.hp), new DecomposeEffects(decomposeEffects));
+
+		if (enemyData.decayTime != null) {
+			universe.setComponents(enemy, new DecayOnTime(enemyData.decayTime));
+		}
 	}
 }

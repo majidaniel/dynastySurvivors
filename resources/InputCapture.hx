@@ -46,7 +46,7 @@ class InputCapture {
 	}
 
 	public function getActionStatus(gameAction:GameAction) {
-		trace(pad);
+		//trace(pad);
 		var status = actionStatus.get(gameAction);
 		if (status == null)
 			return false;

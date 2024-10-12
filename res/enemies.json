@@ -20,6 +20,7 @@
         "xpValue":100,
         "collisionGroup":"Pickup",
         "collisionSize":15,
-        "spawnOdds":1
+        "spawnOdds":1,
+        "decayTime":10
     }
 ]
