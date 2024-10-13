@@ -14,7 +14,7 @@ class WaveData {
 	public var waveType:WaveType;
 	public var enemyDistribution:Array<EnemySpawn> = new Array();
 
-	public function new(jsonInput:Dynamic<>) {
+	public function new(jsonInput:Dynamic) {
 		this.waveType = jsonInput.waveType;
         var distributions:Array<Dynamic> = jsonInput.enemyDistribution;
 		for (dist in distributions) {

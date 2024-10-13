@@ -7,7 +7,7 @@ import Types.GameAction;
 class InputCapture {
 	var keycodeMap:Map<Int, GameAction> = new Map();
 	var actionStatus:Map<GameAction, Bool> = new Map();
-	var pad:Pad;
+	public var pad:Pad;
 
 	public function new() {
 		hxd.Window.getInstance().addEventTarget(onEvent);
@@ -46,7 +46,6 @@ class InputCapture {
 	}
 
 	public function getActionStatus(gameAction:GameAction) {
-		//trace(pad);
 		var status = actionStatus.get(gameAction);
 		if (status == null)
 			return false;

@@ -86,6 +86,7 @@ class EnemySystem extends System {
 				}
 			});
 			state.debugMap['threatOnField'] = '$threatOnField';
+			state.debugMap['ticksElapsed'] = '$ticksElapsed';
 		});
 		setup(sys, {
 			generateEnemies(_dt, queues, threatOnField);
