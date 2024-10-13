@@ -1,5 +1,8 @@
 package components;
 
 class Decompose {
-	public function new() {}
+	public var triggerDecompositions:Bool;
+	public function new(triggerDecompositions=true) {
+		this.triggerDecompositions = triggerDecompositions;
+	}
 }

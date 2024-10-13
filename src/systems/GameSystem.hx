@@ -19,11 +19,6 @@ class GameSystem extends System {
 		resources:{state:GameState, displayResources:DisplayResources, queues:Queues}
 	};
 
-	@:fullFamily var decomposers:{
-		requires:{effects:DecomposeEffects},
-		resources:{}
-	}
-
 	var xpGainCap:Float = 1;
 	var xpGain:Float = 0;
 
@@ -71,19 +66,7 @@ class GameSystem extends System {
 
 	override function onEnabled() {
 		super.onEnabled();
-		decomposers.onEntityRemoved.subscribe(entity -> {
-			setup(decomposers, {
-				fetch(decomposers, entity, {
-					this.evaluateDecomposition(effects.effects);
-				});
-			});
-		});
-	}
-
-	private function evaluateDecomposition(effects:Array<Function>) {
-		for (f in effects) {
-			f();
-		}
+		
 	}
 
 	public function addMinion(type:Types.MinionType, initX:Float, initY:Float, queues:Queues) {

@@ -45,7 +45,6 @@ class EnemySystem extends System {
 	var levelDetails:Array<WaveSetup> = new Array();
 	var waveDetails:Map<WaveType, WaveData> = new Map();
 
-
 	override function onEnabled() {
 		super.onEnabled();
 
@@ -58,8 +57,12 @@ class EnemySystem extends System {
 			enemyDetailsList.set(enemyData.type, enemyData);
 		}
 
-		for(wave in waveData){
-			waveDetails.set(wave.waveType,wave);
+		for (wave in waveData) {
+			waveDetails.set(wave.waveType, new WaveData(wave));
+		}
+
+		for (waveSetup in levelData) {
+			levelDetails.push(new WaveSetup(waveSetup));
 		}
 	}
 
@@ -120,17 +123,21 @@ class EnemySystem extends System {
 	var currentThreat:Float = 10;
 
 	function generateEnemies(_dt:Float, queues:Queues, threatOnField:Float) {
-		var curWave = this.determineCurrentWave();
-		if(curWave == null)
-			return;
-		
 		this.enemySpawn -= _dt;
 		if (enemySpawn < 0) {
+			var curWave = this.determineCurrentWave();
+			if (curWave == null)
+				return;
+
 			currentThreat = (initialThreat + threatScaling * ticksElapsed);
 			var deltaThreat = currentThreat - threatOnField;
 
 			while (deltaThreat > 0) {
 				var type = determineEnemyType(curWave);
+				if (type == null) {
+					trace("Failed to find valid enemy type");
+					break;
+				}
 				addEnemy(type, queues);
 				deltaThreat -= enemyDetailsList[type].threatPoints;
 			}
@@ -146,10 +153,11 @@ class EnemySystem extends System {
 	function determineEnemyType(curWave:WaveData):EnemyType {
 		var r = Math.random();
 		var curSpot:Float = 0;
-		for(enemy in curWave.enemyDistribution){
-			if(enemy.probability + curSpot < r){
+		for (enemy in curWave.enemyDistribution) {
+			if (enemy.probability + curSpot > r) {
 				return enemy.type;
 			}
+			curSpot += enemy.probability;
 		}
 		return null;
 	}
@@ -160,11 +168,11 @@ class EnemySystem extends System {
 		queues.queue(QueueType.EnemyCreationQueue, req);
 	}
 
-	private function determineCurrentWave(){
-		var curWave:WaveData=null;
-		var tempThreat:Float = 999999;
-		for(waveSetup in levelDetails){
-			if(waveSetup.startingThreat > currentThreat && waveSetup.startingThreat < tempThreat){
+	private function determineCurrentWave() {
+		var curWave:WaveData = null;
+		var tempThreat:Float = -1;
+		for (waveSetup in levelDetails) {
+			if (waveSetup.startingThreat < currentThreat && waveSetup.startingThreat > tempThreat) {
 				curWave = waveDetails.get(waveSetup.waveType);
 				tempThreat = waveSetup.startingThreat;
 			}

@@ -10,7 +10,7 @@
         "collisionGroup":"Enemy",
         "collisionSize":5,
         "spawnOdds":0.1,
-        "threatPoints":1
+        "threatPoints":0.5
     },
     {
         "type":"LargeFollowEnemy",
@@ -23,7 +23,7 @@
         "collisionGroup":"Enemy",
         "collisionSize":10,
         "spawnOdds":1,
-        "threatPoints":3
+        "threatPoints":2
     },
     {
         "type":"XpGain",

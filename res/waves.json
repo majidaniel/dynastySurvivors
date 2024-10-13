@@ -20,5 +20,18 @@
                 "probability": 0.1
             }
         ]
+    },
+    {
+        "waveType": "MixedFollowEnemy",
+        "enemyDistribution": [
+            {
+                "type": "BasicFollowEnemy",
+                "probability": 0.5
+            },
+            {
+                "type": "LargeFollowEnemy",
+                "probability": 0.5
+            }
+        ]
     }
 ]

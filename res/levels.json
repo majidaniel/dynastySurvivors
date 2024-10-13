@@ -4,7 +4,7 @@
         "startingThreat": 0
     },
     {
-        "waveType": "MostlyBasicFollowEnemy",
-        "startingThreat": 20
+        "waveType": "MixedFollowEnemy",
+        "startingThreat": 40
     }
 ]
