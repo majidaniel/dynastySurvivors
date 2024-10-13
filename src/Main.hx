@@ -1,3 +1,4 @@
+import hxd.Timer;
 import haxe.macro.Expr.Constant;
 import hxd.fmt.grd.Data.GradientStop;
 import resources.*;
@@ -52,7 +53,14 @@ class Main extends hxd.App {
 
 	// Runs every frame via heaps.io
 	override function update(dt:Float) {
-		universe.update(dt);
+		//var t1:Float = haxe.Timer.stamp();
+		//universe.update(dt);
+		universe.getPhase('game-logic').update(dt);
+
+		//var t2 = haxe.Timer.stamp();
+		universe.getPhase('rendering').update(dt);
+		//var t3 = haxe.Timer.stamp();
+		//trace((t2-t1) + ", " + (t3-t2));
 	}
 
 	// Default haxe entry function

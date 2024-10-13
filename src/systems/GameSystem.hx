@@ -57,7 +57,7 @@ class GameSystem extends System {
 			universe.setComponents(playerObject, playerPosition, new Velocity(0, 0), new Sprite(hxd.Res.circle_orange, displayResources.scene, 7, 7),
 				new PlayerControlled(),
 				new Collidable(CollisionGroup.Player, [CollisionGroup.Enemy,CollisionGroup.Pickup], new PendingEffects(ColissionEffectType.FullConsume, 10000), 3.5),
-				hp);
+				hp, new DecomposeEffects([this.endGame]));
 			
 			for (i in 0...initialMinions)
 				addMinion(MinionType.BasicShooter, state.playerPosition.x, state.playerPosition.y, queues);
@@ -67,6 +67,10 @@ class GameSystem extends System {
 	override function onEnabled() {
 		super.onEnabled();
 		
+	}
+
+	private function endGame(){
+		universe.getPhase('game-logic').disable();
 	}
 
 	public function addMinion(type:Types.MinionType, initX:Float, initY:Float, queues:Queues) {
