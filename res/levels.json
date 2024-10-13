@@ -1,0 +1,10 @@
+[
+    {
+        "waveType": "OnlyBasicFollowEnemy",
+        "startingThreat": 0
+    },
+    {
+        "waveType": "MostlyBasicFollowEnemy",
+        "startingThreat": 20
+    }
+]

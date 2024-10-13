@@ -1,5 +1,6 @@
 package systems;
 
+import hxd.poly2tri.EdgeEvent;
 import h3d.Vector;
 import resources.GameState;
 import ecs.Universe;
@@ -9,6 +10,7 @@ import components.*;
 import Types.CollisionGroup;
 import systems.XpSystem.XpGainRequest;
 import game.EnemyData;
+import game.LevelData;
 import haxe.Constraints.Function;
 import macros.*;
 
@@ -40,14 +42,24 @@ class EnemySystem extends System {
 	}
 
 	var enemyDetailsList:Map<EnemyType, EnemyData> = new std.Map();
+	var levelDetails:Array<WaveSetup> = new Array();
+	var waveDetails:Map<WaveType, WaveData> = new Map();
+
 
 	override function onEnabled() {
 		super.onEnabled();
 
 		var dat:Array<Dynamic> = JsonMacro.load('res/enemies.json');
+		var levelData:Array<Dynamic> = JsonMacro.load('res/levels.json');
+		var waveData:Array<Dynamic> = JsonMacro.load('res/waves.json');
+
 		for (ent in dat) {
 			var enemyData = new EnemyData(ent);
 			enemyDetailsList.set(enemyData.type, enemyData);
+		}
+
+		for(wave in waveData){
+			waveDetails.set(wave.waveType,wave);
 		}
 	}
 
@@ -105,15 +117,20 @@ class EnemySystem extends System {
 	var initialThreat = 10;
 	var threatScaling:Float = 1;
 	var ticksElapsed = 0;
+	var currentThreat:Float = 10;
 
 	function generateEnemies(_dt:Float, queues:Queues, threatOnField:Float) {
+		var curWave = this.determineCurrentWave();
+		if(curWave == null)
+			return;
+		
 		this.enemySpawn -= _dt;
 		if (enemySpawn < 0) {
-			var maxThreat = (initialThreat + threatScaling * ticksElapsed);
-			var deltaThreat = maxThreat - threatOnField;
+			currentThreat = (initialThreat + threatScaling * ticksElapsed);
+			var deltaThreat = currentThreat - threatOnField;
 
 			while (deltaThreat > 0) {
-				var type = determineEnemyType(maxThreat);
+				var type = determineEnemyType(curWave);
 				addEnemy(type, queues);
 				deltaThreat -= enemyDetailsList[type].threatPoints;
 			}
@@ -126,15 +143,33 @@ class EnemySystem extends System {
 	var enemiesInLevel = [EnemyType.BasicFollowEnemy, EnemyType.LargeFollowEnemy];
 	var threatSelection:Float = 0.01;
 
-	function determineEnemyType(maxThreat:Float) {
-		var randThreat:Float = Math.random() * threatSelection * maxThreat;
-		return enemiesInLevel[Math.floor(Math.min(enemiesInLevel.length-1, randThreat))];
+	function determineEnemyType(curWave:WaveData):EnemyType {
+		var r = Math.random();
+		var curSpot:Float = 0;
+		for(enemy in curWave.enemyDistribution){
+			if(enemy.probability + curSpot < r){
+				return enemy.type;
+			}
+		}
+		return null;
 	}
 
 	// TODO: add types
 	private function addEnemy(enemyType:EnemyType, queues:Queues) {
 		var req = new EnemyCreationRequest(enemyType);
 		queues.queue(QueueType.EnemyCreationQueue, req);
+	}
+
+	private function determineCurrentWave(){
+		var curWave:WaveData=null;
+		var tempThreat:Float = 999999;
+		for(waveSetup in levelDetails){
+			if(waveSetup.startingThreat > currentThreat && waveSetup.startingThreat < tempThreat){
+				curWave = waveDetails.get(waveSetup.waveType);
+				tempThreat = waveSetup.startingThreat;
+			}
+		}
+		return curWave;
 	}
 
 	function createEnemy(enemyType:EnemyType, position:Position, displayResources:DisplayResources, queues:Queues) {
@@ -162,11 +197,14 @@ class EnemySystem extends System {
 		var spriteSize:Int;
 		switch (enemyType) {
 			case EnemyType.BasicFollowEnemy:
-				sprite = hxd.Res.circle_red; spriteSize=10;
+				sprite = hxd.Res.circle_red;
+				spriteSize = 10;
 			case EnemyType.LargeFollowEnemy:
-				sprite = hxd.Res.circle_red; spriteSize=20;
+				sprite = hxd.Res.circle_red;
+				spriteSize = 20;
 			case EnemyType.XpGain:
-				sprite = hxd.Res.diamond_blue; spriteSize=10;
+				sprite = hxd.Res.diamond_blue;
+				spriteSize = 10;
 		}
 
 		universe.setComponents(enemy, newPosition, new Velocity(0, 0), new Sprite(sprite, displayResources.scene, spriteSize, spriteSize),

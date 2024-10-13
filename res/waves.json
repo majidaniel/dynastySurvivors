@@ -1,0 +1,24 @@
+[
+    {
+        "waveType": "OnlyBasicFollowEnemy",
+        "enemyDistribution": [
+            {
+                "type": "BasicFollowEnemy",
+                "probability": 1.0
+            }
+        ]
+    },
+    {
+        "waveType": "MostlyBasicFollowEnemy",
+        "enemyDistribution": [
+            {
+                "type": "BasicFollowEnemy",
+                "probability": 0.9
+            },
+            {
+                "type": "LargeFollowEnemy",
+                "probability": 0.1
+            }
+        ]
+    }
+]
