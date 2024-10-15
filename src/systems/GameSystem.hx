@@ -1,5 +1,6 @@
 package systems;
 
+import js.html.audio.OverSampleType;
 import haxe.Constraints.Function;
 import systems.XpSystem.XpConsumeRequest;
 import Types.QueueType;
@@ -9,6 +10,7 @@ import ecs.System;
 import Types.CollisionGroup;
 import systems.MinionSystem.MinionRequest;
 import systems.EnemySystem.EnemyCreationRequest;
+import Types.UIMode;
 
 // System that is responsible for setting up levels & reacting to win conditions
 class GameSystem extends System {
@@ -16,33 +18,32 @@ class GameSystem extends System {
 
 	@:fullFamily var gameState:{
 		requires:{},
-		resources:{state:GameState, displayResources:DisplayResources, queues:Queues}
+		resources:{state:GameState, displayResources:DisplayResources, queues:Queues, inputCapture:InputCapture}
 	};
-
-	var xpGainCap:Float = 1;
-	var xpGain:Float = 0;
-
-	var xpGainAmount = 5;
 
 	var initialMinions = 5;
 
 	public override function update(dt:Float) {
 		setup(gameState, {
-			// If not level is loaded, load a level
-			if (state.currentLevel == null) {
-				initTestScene(displayResources);
-				state.currentLevel = 1;
-			}
-
-			/*this.xpGain -= dt;
-			if (this.xpGain < 0) {
-				queues.queue(QueueType.XpQueue, new XpGainRequest(xpGainAmount));
-				this.xpGain = this.xpGainCap;
-			}*/
 			if (state.xp >= 100) {
 				queues.queue(QueueType.XpQueue, new XpConsumeRequest(100, function() {
 					this.addMinion(MinionType.BasicShooter, state.playerPosition.x, state.playerPosition.y, queues);
 				}));
+			}
+		});
+		handleUIInput();
+	}
+
+	public function handleUIInput(){
+		setup(gameState,{
+			if(state.uiMode == UIMode.MainMenu){
+				if(inputCapture.getActionStatus(GameAction.Select1)){
+					trace("start the game");
+					initTestScene(displayResources);
+					state.currentLevel = 1;
+					state.uiMode = UIMode.InGame;
+					universe.getPhase('game-logic').enable();
+				}
 			}
 		});
 	}
@@ -66,7 +67,6 @@ class GameSystem extends System {
 
 	override function onEnabled() {
 		super.onEnabled();
-		
 	}
 
 	private function endGame(){

@@ -1,5 +1,6 @@
 package resources;
 
+import Types.UIMode;
 import components.HealthContainer;
 import components.Position;
 
@@ -14,6 +15,8 @@ class GameState{
 
     public var xp:Float = 0;
     public var canPlayerTakeAction:Bool=false;
+
+    public var uiMode:UIMode;
 
     public function new(){
         

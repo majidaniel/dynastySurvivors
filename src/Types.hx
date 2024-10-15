@@ -6,6 +6,9 @@ enum abstract GameAction(Int) to Int {
 	var MoveUp;
 	var MoveDown;
 	var MergeAction;
+	var Select1;
+	var Select2;
+	var Select3;
 }
 
 enum abstract CollisionGroup(String) to String {
@@ -61,4 +64,10 @@ enum abstract WaveType(String) to String{
 	var OnlyBasicFollowEnemy;
 	var MostlyBasicFollowEnemy;
 	var MixedFollowEnemy;
+}
+
+enum abstract UIMode(String) to String{
+	var MainMenu;
+	var EndOfGame;
+	var InGame;
 }

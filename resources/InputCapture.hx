@@ -16,6 +16,9 @@ class InputCapture {
 		keycodeMap.set(40, GameAction.MoveDown);
 		keycodeMap.set(37, GameAction.MoveLeft);
 		keycodeMap.set(32, GameAction.MergeAction);
+		keycodeMap.set(49,GameAction.Select1);
+		keycodeMap.set(50,GameAction.Select2);
+		keycodeMap.set(51,GameAction.Select3);
 
 		hxd.Pad.wait(onPad);
 	}
@@ -35,6 +38,7 @@ class InputCapture {
 		switch (event.kind) {
 			case EKeyDown:
 				var actionType = keycodeMap.get(event.keyCode);
+				trace(event.keyCode);
 				if (actionType != null)
 					actionStatus.set(actionType, true);
 			case EKeyUp:

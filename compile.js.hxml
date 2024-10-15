@@ -3,6 +3,7 @@
 -lib heaps
 -lib ecs
 -lib differ
+-lib domkit
 -js build.js
 -main Main
 -debug

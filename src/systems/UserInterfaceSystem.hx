@@ -1,11 +1,10 @@
 package systems;
 
-import hxd.Event;
+import h2d.Flow;
+import h2d.domkit.Object;
+import systems.views.MenuView;
 import h2d.Graphics;
-import h2d.Scene;
 import h3d.Vector4;
-import h3d.Vector;
-import hxd.fmt.grd.Data.Color;
 import ecs.Universe;
 import ecs.System;
 
@@ -17,26 +16,44 @@ class UserInterfaceSystem extends System {
 	};
 
 	var debugText:h2d.Text;
-	var xpText:h2d.Text;
 	var hpText:h2d.Text;
 	var actionText:h2d.Text;
 
+	var activeView:Flow;
+	var activeViewType:UIMode;
+
+	override function onEnabled() {
+		super.onEnabled();
+		this.enterMainMenuMode();
+	}
+
+	private function enterMainMenuMode() {
+		setup(gameState, {
+			this.activeView = new MenuView(hxd.Res.circle_orange.toTile(), displayResources.scene);
+			state.uiMode = UIMode.MainMenu;
+			activeViewType=UIMode.MainMenu;
+		});
+	}
+
 	public override function update(dT) {
 		setup(gameState, {
-			if(hpText == null){
-				hpText= this.genText(1,10);
-				displayResources.scene.add(hpText);
+			if(state.uiMode != this.activeViewType){
+				//Clean up time
+				displayResources.scene.removeChild(activeView);
+				this.activeViewType = state.uiMode;
 			}
-			if (xpText == null) {
-				xpText = this.genText(50, 10);
-				displayResources.scene.add(xpText);
+
+
+			if (hpText == null) {
+				hpText = this.genText(1, 10);
+				displayResources.scene.add(hpText);
 			}
 			if (actionText == null) {
 				actionText = this.genText(10, 30);
 				displayResources.scene.add(actionText);
 			}
-			if(debugText == null){
-				debugText = this.genText(10,400);
+			if (debugText == null) {
+				debugText = this.genText(10, 400);
 				displayResources.scene.add(debugText);
 			}
 
@@ -44,18 +61,18 @@ class UserInterfaceSystem extends System {
 				commandGraphic = new Graphics(displayResources.scene);
 			}
 
-			this.hpText.text = "HP: " + state.hp.hpAmount;
-			this.xpText.text = "Charge: " + state.xp + "%";
+			if (state.hp != null)
+				this.hpText.text = "HP: " + state.hp.hpAmount;
 
 			if (state.canPlayerTakeAction) {
 				this.actionText.text = "Press spacebar";
 			} else {
 				this.actionText.text = "";
 			}
-			 debugText.text = "";
-			 for(k=>v in state.debugMap){
+			debugText.text = "";
+			for (k => v in state.debugMap) {
 				debugText.text += '$k: $v, ';
-			 }
+			}
 
 			debugStuff(displayResources);
 			// debugText.text = state.debugText;

@@ -22,9 +22,14 @@ class Main extends hxd.App {
 			entities: 1000000,
 			phases: [
 				{
+					name: 'game-manager',
+					systems: [GameSystem],
+					enabled: false
+				},
+				{
 					name: 'game-logic',
 					systems: [
-						GameSystem,
+
 						XpSystem,
 						EnemySystem,
 						MinionSystem,
@@ -34,11 +39,13 @@ class Main extends hxd.App {
 						CollisionDetectionSystem,
 						CollisionResolutionSystem,
 						DecompositionSystem
-					]
+					],
+					enabled: false
 				},
 				{
 					name: 'rendering',
-					systems: [RenderSystem, UserInterfaceSystem]
+					systems: [RenderSystem, UserInterfaceSystem],
+					enabled: false
 				}
 			]
 		});
@@ -48,19 +55,24 @@ class Main extends hxd.App {
 		var inputCapturer = new InputCapture();
 		var gameState = new GameState();
 		var queues = new Queues();
-		universe.setResources(displayResources, inputCapturer, gameState,queues);
+		universe.setResources(displayResources, inputCapturer, gameState, queues);
+
+		universe.getPhase('rendering').enable();
+		universe.getPhase('game-manager').enable();
 	}
 
 	// Runs every frame via heaps.io
 	override function update(dt:Float) {
-		//var t1:Float = haxe.Timer.stamp();
-		//universe.update(dt);
+		// var t1:Float = haxe.Timer.stamp();
+		// universe.update(dt);
+		universe.getPhase('game-manager').update(dt);
+		
 		universe.getPhase('game-logic').update(dt);
 
-		//var t2 = haxe.Timer.stamp();
+		// var t2 = haxe.Timer.stamp();
 		universe.getPhase('rendering').update(dt);
-		//var t3 = haxe.Timer.stamp();
-		//trace((t2-t1) + ", " + (t3-t2));
+		// var t3 = haxe.Timer.stamp();
+		// trace((t2-t1) + ", " + (t3-t2));
 	}
 
 	// Default haxe entry function
