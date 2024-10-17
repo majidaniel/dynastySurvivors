@@ -2,7 +2,7 @@ package systems;
 
 import h2d.Flow;
 import h2d.domkit.Object;
-import systems.views.MenuView;
+import systems.views.*;
 import h2d.Graphics;
 import h3d.Vector4;
 import ecs.Universe;
@@ -29,7 +29,7 @@ class UserInterfaceSystem extends System {
 
 	private function enterMainMenuMode() {
 		setup(gameState, {
-			this.activeView = new MenuView(hxd.Res.circle_orange.toTile(), displayResources.scene);
+			this.activeView = new MenuView(displayResources.scene);
 			state.uiMode = UIMode.MainMenu;
 			activeViewType=UIMode.MainMenu;
 		});
@@ -40,6 +40,11 @@ class UserInterfaceSystem extends System {
 			if(state.uiMode != this.activeViewType){
 				//Clean up time
 				displayResources.scene.removeChild(activeView);
+
+				if(state.uiMode == UIMode.EndOfGame){
+					this.activeView = new GameOverView(state.minionCount,displayResources.scene);
+				}
+
 				this.activeViewType = state.uiMode;
 			}
 

@@ -11,7 +11,7 @@ class MenuView extends h2d.Flow implements h2d.domkit.Object {
         </menu-view>
         
 
-    public function new(tile:h2d.Tile,?parent) {
+    public function new(?parent) {
         super(parent);
         initComponent();
         var style = new h2d.domkit.Style();

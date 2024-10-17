@@ -18,6 +18,8 @@ class GameState{
 
     public var uiMode:UIMode;
 
+    public var minionCount:Float=0;
+
     public function new(){
         
     }

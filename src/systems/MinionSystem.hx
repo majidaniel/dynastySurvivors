@@ -61,6 +61,7 @@ class MinionSystem extends System {
 					}
 				}
 			});
+			state.minionCount = mC;
 			state.debugMap['minion count'] = '$mC';
 			state.debugMap['DPS'] = '$debug_DPS';
 		});
