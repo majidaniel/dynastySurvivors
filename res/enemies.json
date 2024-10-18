@@ -37,5 +37,29 @@
         "spawnOdds":1,
         "decayTime":10,
         "threatPoints":0
+    },
+    {
+        "type":"QuickSmallFollowEnemy",
+        "maxSpeed":100.0,
+        "acceleration":100.0,
+        "hp":1,
+        "playerDamage":3,
+        "xpValue":0,
+        "collisionGroup":"Enemy",
+        "collisionSize":2.5,
+        "threatPoints":0.1,
+        "decayTime":5
+    },
+    {
+        "type": "LargeSpawner",
+        "maxSpeed": 10,
+        "acceleration":1,
+        "hp":10000,
+        "collisionGroup":"Enemy",
+        "collisionSize":25,
+        "threatPoints":20,
+        "components":[
+            {"type":"Spawner","spawnType":"QuickSmallFollowEnemy","velocity":100.0,"angles":[-90,90],"frequency":0.2}
+        ]
     }
 ]

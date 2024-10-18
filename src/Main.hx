@@ -33,6 +33,7 @@ class Main extends hxd.App {
 						XpSystem,
 						EnemySystem,
 						MinionSystem,
+						FieldComponentSystem,
 						BulletSystem,
 						MoveSystem,
 						DecaySystem,

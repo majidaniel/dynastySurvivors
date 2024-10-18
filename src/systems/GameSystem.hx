@@ -44,7 +44,6 @@ class GameSystem extends System {
 			if (state.uiMode == UIMode.MainMenu) {
 				if (inputCapture.getActionStatus(GameAction.Select1)) {
 					initTestScene();
-					state.currentLevel = 1;
 					state.uiMode = UIMode.InGame;
 					universe.getPhase('game-logic').enable();
 				}
@@ -55,6 +54,7 @@ class GameSystem extends System {
 					initTestScene();
 					state.currentLevel = 1;
 					state.uiMode = UIMode.InGame;
+
 					universe.getPhase('game-logic').enable();
 				}
 			}
@@ -70,11 +70,15 @@ class GameSystem extends System {
 		});
 	}
 
+	//Todo: make levels a thing
 	public function initTestScene() {
 		setup(gameState, {
 			final playerObject = universe.createEntity();
 			var hp = new HealthContainer(100);
 			state.hp = hp;
+			state.currentThreat = 10;
+			state.currentLevel = 1;
+			state.ticksElapsed = 0;
 			final playerPosition = new Position(Constants.screenSpaceWidth / 2, screenSpaceHeight / 2);
 			state.playerPosition = playerPosition;
 			universe.setComponents(playerObject, playerPosition, new Velocity(0, 0), new Sprite(hxd.Res.circle_orange, displayResources.scene, 7, 7),

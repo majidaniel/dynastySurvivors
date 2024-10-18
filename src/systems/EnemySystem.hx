@@ -17,10 +17,13 @@ import macros.*;
 class EnemyCreationRequest {
 	var enemyType:EnemyType;
 	var startPosition:Position = null;
+	var startVelocity:Vector = new Vector(0, 0);
 
-	public function new(enemyType:EnemyType, startPosition:Position = null) {
+	public function new(enemyType:EnemyType, startPosition:Position = null, startVelocity:Vector = null) {
 		this.enemyType = enemyType;
 		this.startPosition = startPosition;
+		if (startVelocity != null)
+			this.startVelocity = startVelocity;
 	}
 }
 
@@ -38,11 +41,12 @@ class EnemySystem extends System {
 
 	@:fullFamily var sys:{
 		requires:{},
-		resources:{displayResources:DisplayResources, queues:Queues}
+		resources:{displayResources:DisplayResources, queues:Queues, state:GameState}
 	}
 
 	var enemyDetailsList:Map<EnemyType, EnemyData> = new std.Map();
 	var levelDetails:Array<WaveSetup> = new Array();
+	var uniqueSpawns:Array<WaveSetup> = new Array();
 	var waveDetails:Map<WaveType, WaveData> = new Map();
 
 	override function onEnabled() {
@@ -62,7 +66,11 @@ class EnemySystem extends System {
 		}
 
 		for (waveSetup in levelData) {
-			levelDetails.push(new WaveSetup(waveSetup));
+			var ws = new WaveSetup(waveSetup);
+			if (ws.startingThreat != null)
+				levelDetails.push(ws);
+			else if (ws.spawnAt != null)
+				uniqueSpawns.push(ws);
 		}
 	}
 
@@ -86,10 +94,10 @@ class EnemySystem extends System {
 				}
 			});
 			state.debugMap['threatOnField'] = '$threatOnField';
-			state.debugMap['ticksElapsed'] = '$ticksElapsed';
+			state.debugMap['threat'] = '' + state.currentThreat;
 		});
 		setup(sys, {
-			generateEnemies(_dt, queues, threatOnField);
+			generateEnemies(_dt, queues, state, threatOnField);
 
 			var enemyCreationQueue = queues.getQueue(QueueType.EnemyCreationQueue);
 			for (req in enemyCreationQueue) {
@@ -108,7 +116,7 @@ class EnemySystem extends System {
 					// vector = vector.add(new Vector(Constants.screenSpaceWidth / 2, Constants.screenSpaceHeight / 2));
 					req.startPosition = new Position(vector.x, vector.y);
 				}
-				createEnemy(req.enemyType, req.startPosition, displayResources, queues);
+				createEnemy(req.enemyType, req.startPosition, req.startVelocity, displayResources, queues);
 			}
 			queues.clearQueue(QueueType.EnemyCreationQueue);
 		});
@@ -118,20 +126,33 @@ class EnemySystem extends System {
 	var enemySpawn:Float = 0;
 	var enemyCount:Int = 1;
 
-	var initialThreat = 10;
 	var threatScaling:Float = 1;
-	var ticksElapsed = 0;
-	var currentThreat:Float = 10;
 
-	function generateEnemies(_dt:Float, queues:Queues, threatOnField:Float) {
+	function generateEnemies(_dt:Float, queues:Queues, state:GameState, threatOnField:Float) {
 		this.enemySpawn -= _dt;
+		state.currentThreat = (state.initialThreat + threatScaling * state.ticksElapsed);
+
+		// Evaluate specific spawns
+		for (spawn in uniqueSpawns) {
+			if (spawn.consumed)
+				continue;
+			if (spawn.spawnAt < state.currentThreat) {
+				for (enemyDist in this.waveDetails[spawn.waveType].enemyDistribution) {
+					for (i in 0...enemyDist.quantity) {
+						addEnemy(enemyDist.type, queues);
+					}
+				}
+				spawn.consumed = true;
+			}
+		}
+
+		// Normal wave spawning
 		if (enemySpawn < 0) {
-			var curWave = this.determineCurrentWave();
+			var curWave = this.determineCurrentWave(state);
 			if (curWave == null)
 				return;
 
-			currentThreat = (initialThreat + threatScaling * ticksElapsed);
-			var deltaThreat = currentThreat - threatOnField;
+			var deltaThreat = state.currentThreat - threatOnField;
 
 			while (deltaThreat > 0) {
 				var type = determineEnemyType(curWave);
@@ -144,12 +165,9 @@ class EnemySystem extends System {
 			}
 
 			enemySpawn = enemySpawnCap;
-			ticksElapsed++;
+			state.ticksElapsed++;
 		}
 	}
-
-	var enemiesInLevel = [EnemyType.BasicFollowEnemy, EnemyType.LargeFollowEnemy];
-	var threatSelection:Float = 0.01;
 
 	function determineEnemyType(curWave:WaveData):EnemyType {
 		var r = Math.random();
@@ -163,17 +181,16 @@ class EnemySystem extends System {
 		return null;
 	}
 
-	// TODO: add types
 	private function addEnemy(enemyType:EnemyType, queues:Queues) {
 		var req = new EnemyCreationRequest(enemyType);
 		queues.queue(QueueType.EnemyCreationQueue, req);
 	}
 
-	private function determineCurrentWave() {
+	private function determineCurrentWave(state:GameState) {
 		var curWave:WaveData = null;
 		var tempThreat:Float = -1;
 		for (waveSetup in levelDetails) {
-			if (waveSetup.startingThreat < currentThreat && waveSetup.startingThreat > tempThreat) {
+			if (waveSetup.startingThreat < state.currentThreat && waveSetup.startingThreat > tempThreat) {
 				curWave = waveDetails.get(waveSetup.waveType);
 				tempThreat = waveSetup.startingThreat;
 			}
@@ -181,7 +198,7 @@ class EnemySystem extends System {
 		return curWave;
 	}
 
-	function createEnemy(enemyType:EnemyType, position:Position, displayResources:DisplayResources, queues:Queues) {
+	function createEnemy(enemyType:EnemyType, position:Position, velocity:Vector, displayResources:DisplayResources, queues:Queues) {
 		var enemyData = enemyDetailsList.get(enemyType);
 		var enemy = universe.createEntity();
 		// Force a new position so references aren't lost
@@ -214,9 +231,15 @@ class EnemySystem extends System {
 			case EnemyType.XpGain:
 				sprite = hxd.Res.diamond_blue;
 				spriteSize = 10;
+			case EnemyType.QuickSmallFollowEnemy:
+				sprite = hxd.Res.triangle_red;
+				spriteSize = 5;
+			case EnemyType.LargeSpawner:
+				sprite = hxd.Res.circle_red;
+				spriteSize = 50;
 		}
 
-		universe.setComponents(enemy, newPosition, new Velocity(0, 0), new Sprite(sprite, displayResources.scene, spriteSize, spriteSize),
+		universe.setComponents(enemy, newPosition, new Velocity(velocity.x, velocity.y), new Sprite(sprite, displayResources.scene, spriteSize, spriteSize),
 			new PlayerSeeker(PlayerSeekingType.Linear, enemyData.maxSpeed * (1 + (Math.random() - 0.5) * Constants.ENEMY_MAX_SPEED_VARIANCE),
 				enemyData.acceleration * (1 + (Math.random() - 0.5) * Constants.ENEMY_ACCELERATION_VARIANCE)),
 			new Collidable(enemyData.collisionGroup, [CollisionGroup.Player], new PendingEffects(ColissionEffectType.Damage, enemyData.playerDamage),
@@ -225,6 +248,14 @@ class EnemySystem extends System {
 
 		if (enemyData.decayTime != null) {
 			universe.setComponents(enemy, new DecayOnTime(enemyData.decayTime));
+		}
+
+		if (enemyData.components != null) {
+			for (component in enemyData.components) {
+				if (component.type == "Spawner") {
+					universe.setComponents(enemy, new EnemySpawner(component.spawnType, component.frequency, component.angles, component.velocity));
+				}
+			}
 		}
 	}
 }

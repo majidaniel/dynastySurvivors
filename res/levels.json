@@ -4,7 +4,15 @@
         "startingThreat": 0
     },
     {
-        "waveType": "MixedFollowEnemy",
+        "waveType": "MostlyBasicFollowEnemy",
         "startingThreat": 40
+    },
+    {
+        "waveType": "LargeSpawnerBoss",
+        "spawnAt": 60
+    },
+    {
+        "waveType": "MixedFollowEnemy",
+        "startingThreat": 80
     }
 ]

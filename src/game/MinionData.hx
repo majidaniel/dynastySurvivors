@@ -23,6 +23,8 @@ class MinionData {
 	public var upgradeQuantityFloor:Float;
 	public var upgradeScaffoldingCount:Float;
 
+	public var components:Array<Dynamic>;
+
 	public function new(jsonInput:Dynamic) {
 		this.type = jsonInput.type;
 
@@ -36,6 +38,9 @@ class MinionData {
 			this.numberToUpgrade = jsonInput.upgradesTo.numberToUpgrade;
 			this.upgradeQuantityFloor = jsonInput.upgradesTo.upgradeQuantityFloor;
 			this.upgradeScaffoldingCount = jsonInput.upgradesTo.upgradeScaffoldingCount;
+		}
+		if(jsonInput.components != null){
+			this.components = jsonInput.components;
 		}
 	}
 }

@@ -58,6 +58,8 @@ enum abstract EnemyType(String) to String{
 	var XpGain;
 	var BasicFollowEnemy;
 	var LargeFollowEnemy;
+	var QuickSmallFollowEnemy;
+	var LargeSpawner;
 }
 
 enum abstract WaveType(String) to String{
