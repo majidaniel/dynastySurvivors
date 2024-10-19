@@ -35,6 +35,15 @@
         ]
     },
     {
+        "waveType": "LargeFollowEnemy",
+        "enemyDistribution": [
+            {
+                "type": "LargeFollowEnemy",
+                "probability": 1.0
+            }
+        ]
+    },
+    {
         "waveType":"LargeSpawnerBoss",
         "enemyDistribution":[
             {"type":"LargeSpawner","quantity":1},

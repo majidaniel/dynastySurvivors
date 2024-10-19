@@ -14,5 +14,9 @@
     {
         "waveType": "MixedFollowEnemy",
         "startingThreat": 80
+    },
+    {
+        "waveType": "LargeFollowEnemy",
+        "startingThreat": 120
     }
 ]

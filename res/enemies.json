@@ -54,7 +54,7 @@
         "type": "LargeSpawner",
         "maxSpeed": 10,
         "acceleration":1,
-        "hp":2000,
+        "hp":1000,
         "playerDamage":1000,
         "collisionGroup":"Enemy",
         "collisionSize":25,
