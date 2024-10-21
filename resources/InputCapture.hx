@@ -38,7 +38,6 @@ class InputCapture {
 		switch (event.kind) {
 			case EKeyDown:
 				var actionType = keycodeMap.get(event.keyCode);
-				trace(event.keyCode);
 				if (actionType != null)
 					actionStatus.set(actionType, true);
 			case EKeyUp:

@@ -1,3 +1,4 @@
+import h3d.Engine;
 import hxd.Timer;
 import haxe.macro.Expr.Constant;
 import hxd.fmt.grd.Data.GradientStop;
@@ -16,7 +17,7 @@ class Main extends hxd.App {
 		hxd.Res.initEmbed();
 		engine.backgroundColor = 0xffffff;
 		s2d.scaleMode = LetterBox(screenSpaceWidth, screenSpaceHeight, false);
-
+		
 		// ECS library, creates a collection of systems that we'll use later to run
 		universe = Universe.create({
 			entities: 1000000,
@@ -45,14 +46,14 @@ class Main extends hxd.App {
 				},
 				{
 					name: 'rendering',
-					systems: [RenderSystem, UserInterfaceSystem],
+					systems: [RenderSystem,ParticleSystem, UserInterfaceSystem],
 					enabled: false
 				}
 			]
 		});
 
 		// Setup resources (aka Singletons) for use in ECS retrieval
-		var displayResources = new DisplayResources(s2d);
+		var displayResources = new DisplayResources(s2d,s3d);
 		var inputCapturer = new InputCapture();
 		var gameState = new GameState();
 		var queues = new Queues();
@@ -74,6 +75,11 @@ class Main extends hxd.App {
 		universe.getPhase('rendering').update(dt);
 		// var t3 = haxe.Timer.stamp();
 		// trace((t2-t1) + ", " + (t3-t2));
+	}
+
+	override function render(e:Engine) {
+		s3d.render(e);
+		s2d.render(e);
 	}
 
 	// Default haxe entry function

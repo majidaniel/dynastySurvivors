@@ -25,6 +25,7 @@ enum abstract PlayerSeekingType(Int) to Int{
 enum abstract ColissionEffectType(Int) to Int{
 	var Damage;
 	var FullConsume;
+	var Particles;
 }
 
 enum abstract BulletType(String) to String{
@@ -52,6 +53,7 @@ enum abstract QueueType(String) to String{
 	var MinionCreationQueue;
 	var XpQueue;
 	var EnemyCreationQueue;
+	var ParticleCreationQueue;
 }
 
 enum abstract EnemyType(String) to String{

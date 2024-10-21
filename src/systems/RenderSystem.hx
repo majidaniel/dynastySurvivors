@@ -16,7 +16,6 @@ class RenderSystem extends System {
 	override function update(_dt:Float) {
 		setup(renderables, {
 			iterate(renderables, {
-				displayResources.scene.add(sprite.graphics);
 				sprite.setRelativePosition(pos.x,pos.y);
 			});
 		});
@@ -24,6 +23,13 @@ class RenderSystem extends System {
 
 	override function onEnabled() {
 		super.onEnabled();
+		renderables.onEntityAdded.subscribe(entity ->{
+			setup(renderables,{
+				fetch(renderables,entity, {
+					displayResources.scene.addChild(sprite.graphics);
+				});
+			});
+		});
 		renderables.onEntityRemoved.subscribe(entity ->{
 			setup(renderables,{
 				fetch(renderables,entity, {

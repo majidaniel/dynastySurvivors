@@ -1,15 +1,22 @@
 package systems;
 
+import systems.ParticleSystem.ParticlesRequest;
+
 // System that is responsible for setting up levels & reacting to win conditions
 class BulletSystem extends System {
 	private var enemyPositions:Array<Position> = new Array();
 
 	@:fullFamily var emitters:{
 		requires:{bulletEmitter:BulletEmitter, position:Position},
-		resources:{state:GameState, displayResources:DisplayResources}
+		resources:{state:GameState, displayResources:DisplayResources, queues:Queues}
 	};
 	@:fullFamily var enemyList:{
-		requires:{playerSeeker:PlayerSeeker, position:Position, hp:HealthContainer, threatGenerator:ThreatGenerator},
+		requires:{
+			playerSeeker:PlayerSeeker,
+			position:Position,
+			hp:HealthContainer,
+			threatGenerator:ThreatGenerator
+		},
 		resources:{state:GameState}
 	}
 
@@ -28,16 +35,16 @@ class BulletSystem extends System {
 					else
 						velocity = new Vector(targetPosition.x - position.x, targetPosition.y - position.y).normalized();
 
-					addBullet(bulletEmitter.bulletType, position.x, position.y, velocity, displayResources);
+					addBullet(bulletEmitter.bulletType, position.x, position.y, velocity, displayResources,queues);
 					bulletEmitter.timeToNextEmission = bulletEmitter.reloadSpeed * (1 + (Math.random() - .5) * Constants.MINION_RELOAD_VARIANCE);
 				}
 			});
 		});
 	}
 
-	public function addBullet(type:BulletType, startX:Float, startY:Float, velocity:Vector, displayResources:DisplayResources) {
+	public function addBullet(type:BulletType, startX:Float, startY:Float, velocity:Vector, displayResources:DisplayResources,queues:Queues) {
 		var bulletSpeed = 1;
-		var decayDistance:Float=0;
+		var decayDistance:Float = 0;
 		var sprite:Sprite = null;
 		if (type == BulletType.Melee) {
 			bulletSpeed = 40;
@@ -45,7 +52,7 @@ class BulletSystem extends System {
 			sprite = new Sprite(hxd.Res.circle, displayResources.scene, 10, 10);
 		} else if (type == BulletType.Basic || type == BulletType.Basic3 || type == BulletType.Basic5 || type == BulletType.Basic10) {
 			bulletSpeed = 200;
-			decayDistance=200;
+			decayDistance = 200;
 			sprite = new Sprite(hxd.Res.circle, displayResources.scene, 3, 3);
 		}
 
@@ -53,23 +60,35 @@ class BulletSystem extends System {
 
 		var velocityArray = [velocity];
 		var scatterArray = [];
-		if(type == BulletType.Basic3){
-			scatterArray = [-15,15];
-		}else if(type == BulletType.Basic5){
-			scatterArray = [-30,-15,15,30];
-		}else if(type == BulletType.Basic10){
-			scatterArray = [-60,-45,-30,-15,15,30,45,60];
+		if (type == BulletType.Basic3) {
+			scatterArray = [-15, 15];
+		} else if (type == BulletType.Basic5) {
+			scatterArray = [-30, -15, 15, 30];
+		} else if (type == BulletType.Basic10) {
+			scatterArray = [-60, -45, -30, -15, 15, 30, 45, 60];
 		}
-		for(angle in scatterArray){
-			velocityArray.push(new Vector(velocity.x * Math.cos(angle*Math.PI/180) - velocity.y * Math.sin(angle*Math.PI/180), velocity.x * Math.sin(angle*Math.PI/180) + velocity.y * Math.cos(angle*Math.PI/180)));
+		for (angle in scatterArray) {
+			velocityArray.push(new Vector(velocity.x * Math.cos(angle * Math.PI / 180) - velocity.y * Math.sin(angle * Math.PI / 180),
+				velocity.x * Math.sin(angle * Math.PI / 180) + velocity.y * Math.cos(angle * Math.PI / 180)));
 		}
 
-		//TODO: sprite hard coded here, change based on type above
+		// TODO: sprite hard coded here, change based on type above
 		for (vel in velocityArray) {
 			var bullet = universe.createEntity();
-			universe.setComponents(bullet, new Position(startX, startY), new Velocity(vel.x, vel.y), new Sprite(hxd.Res.circle, displayResources.scene, 3, 3),
-				new Collidable(CollisionGroup.PlayerBullet, [CollisionGroup.Enemy], new PendingEffects(ColissionEffectType.Damage, Constants.BASE_BULLET_DAMAGE), 3),
-				new HealthContainer(1), new DecayOnDistance(decayDistance));
+			var pendEffects = new PendingEffects(ColissionEffectType.Damage, Constants.BASE_BULLET_DAMAGE);
+			// pendEffects.addEffect(ColissionEffectType.Particles,0);
+			var position = new Position(startX, startY);
+			var decomposeEffects = new DecomposeEffects([
+				function()
+				{
+					var req:ParticlesRequest = {startPosition: new Position(position.x, position.y), quantity: 0};
+					queues.queue(QueueType.ParticleCreationQueue, req);
+				}
+			]);
+
+			universe.setComponents(bullet, position, new Velocity(vel.x, vel.y), new Sprite(hxd.Res.circle, displayResources.scene, 3, 3),
+				new Collidable(CollisionGroup.PlayerBullet, [CollisionGroup.Enemy], pendEffects, 3), new HealthContainer(1),
+				new DecayOnDistance(decayDistance), decomposeEffects);
 		}
 	}
 
@@ -95,7 +114,7 @@ class BulletSystem extends System {
 		enemyPositions = new Array();
 		setup(enemyList, {
 			iterate(enemyList, {
-				if(threatGenerator.threatLevel > 0)
+				if (threatGenerator.threatLevel > 0)
 					enemyPositions.push(position);
 			});
 		});
