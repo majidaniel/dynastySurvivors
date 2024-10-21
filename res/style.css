@@ -1,4 +1,11 @@
-flow.box {
-    padding : 20;
-    background : #400;
+.box {
+    padding: 5;
+    background: #4c41eb;
+}
+
+
+.itemCard {
+    padding: 10px;
+    margin: 20px;
+    background: white;
 }

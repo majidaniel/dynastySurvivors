@@ -18,17 +18,17 @@ enum abstract CollisionGroup(String) to String {
 	var Pickup;
 }
 
-enum abstract PlayerSeekingType(Int) to Int{
+enum abstract PlayerSeekingType(Int) to Int {
 	var Linear;
 }
 
-enum abstract ColissionEffectType(Int) to Int{
+enum abstract ColissionEffectType(Int) to Int {
 	var Damage;
 	var FullConsume;
 	var Particles;
 }
 
-enum abstract BulletType(String) to String{
+enum abstract BulletType(String) to String {
 	var Basic;
 	var Basic3;
 	var Basic5;
@@ -36,11 +36,11 @@ enum abstract BulletType(String) to String{
 	var Melee;
 }
 
-enum abstract BulletTargetingPriority(Int) to Int{
+enum abstract BulletTargetingPriority(Int) to Int {
 	var Closest;
 }
 
-enum abstract MinionType(String) to String{
+enum abstract MinionType(String) to String {
 	var BasicShooter;
 	var BasicShooter2;
 	var BasicShooter3;
@@ -49,14 +49,14 @@ enum abstract MinionType(String) to String{
 	var ShooterTier2;
 }
 
-enum abstract QueueType(String) to String{
+enum abstract QueueType(String) to String {
 	var MinionCreationQueue;
 	var XpQueue;
 	var EnemyCreationQueue;
 	var ParticleCreationQueue;
 }
 
-enum abstract EnemyType(String) to String{
+enum abstract EnemyType(String) to String {
 	var XpGain;
 	var BasicFollowEnemy;
 	var LargeFollowEnemy;
@@ -64,14 +64,15 @@ enum abstract EnemyType(String) to String{
 	var LargeSpawner;
 }
 
-enum abstract WaveType(String) to String{
+enum abstract WaveType(String) to String {
 	var OnlyBasicFollowEnemy;
 	var MostlyBasicFollowEnemy;
 	var MixedFollowEnemy;
 }
 
-enum abstract UIMode(String) to String{
+enum abstract UIMode(String) to String {
 	var MainMenu;
 	var EndOfGame;
 	var InGame;
+	var InStore;
 }

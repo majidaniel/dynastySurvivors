@@ -41,6 +41,7 @@ class ParticleSystem extends System {
 				//var particleGroup = new h3d.parts.GpuParticles.GpuPartGroup(particles);
                 var particleGroup = new ParticleGroup(particles);
 
+                //TODO: clan this up, move to Cone
 				particleGroup.emitMode = Point;
 				particleGroup.emitAngle = 0.5;
 				particleGroup.emitDist = 0;

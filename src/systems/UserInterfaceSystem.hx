@@ -45,6 +45,10 @@ class UserInterfaceSystem extends System {
 					this.activeView = new GameOverView(state.minionCount,displayResources.scene);
 				}
 
+				if(state.uiMode == UIMode.InStore){
+					this.activeView = new StoreView(displayResources.scene);
+				}
+
 				this.activeViewType = state.uiMode;
 			}
 

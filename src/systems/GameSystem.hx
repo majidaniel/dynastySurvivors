@@ -58,6 +58,12 @@ class GameSystem extends System {
 					universe.getPhase('game-logic').enable();
 				}
 			}
+			if(state.uiMode == UIMode.InGame){
+				if(inputCapture.getActionStatus(GameAction.Select3)){
+					state.uiMode = UIMode.InStore;
+					universe.getPhase('game-logic').disable();
+				}
+			}
 		});
 	}
 
