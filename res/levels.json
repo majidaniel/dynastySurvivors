@@ -4,10 +4,6 @@
         "startingThreat": 0
     },
     {
-        "waveType":"LargeFollowEnemy",
-        "startingThreat":1
-    },
-    {
         "waveType": "MostlyBasicFollowEnemy",
         "startingThreat": 40
     },
