@@ -46,7 +46,7 @@ class UserInterfaceSystem extends System {
 				}
 
 				if(state.uiMode == UIMode.InStore){
-					this.activeView = new StoreView(displayResources.scene);
+					this.activeView = new StoreView(state.availableItems,displayResources.scene);
 				}
 
 				this.activeViewType = state.uiMode;

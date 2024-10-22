@@ -1,5 +1,6 @@
 package resources;
 
+import game.PlayerItem;
 import Types.UIMode;
 import components.HealthContainer;
 import components.Position;
@@ -23,6 +24,8 @@ class GameState {
 	public var initialThreat:Float = 10;
 	public var currentThreat:Float = 10;
     public var ticksElapsed:Float=0;
+
+	public var availableItems:Array<PlayerItem>;
 
 	public function new() {}
 }

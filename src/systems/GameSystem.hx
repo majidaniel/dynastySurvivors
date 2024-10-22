@@ -1,5 +1,6 @@
 package systems;
 
+import game.PlayerItem;
 import systems.XpSystem.XpConsumeRequest;
 import Types.QueueType;
 import Types.MinionType;
@@ -60,10 +61,17 @@ class GameSystem extends System {
 			}
 			if(state.uiMode == UIMode.InGame){
 				if(inputCapture.getActionStatus(GameAction.Select3)){
-					state.uiMode = UIMode.InStore;
-					universe.getPhase('game-logic').disable();
+					storeMode();
 				}
 			}
+		});
+	}
+
+	public function storeMode(){
+		setup(gameState, {
+			state.availableItems = [new PlayerItem(PlayerItemType.MinionBoost5),new PlayerItem(PlayerItemType.TowerBuilder)];
+			state.uiMode = UIMode.InStore;
+			universe.getPhase('game-logic').disable();
 		});
 	}
 

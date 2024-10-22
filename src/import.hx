@@ -9,6 +9,7 @@ import Types.QueueType;
 import Types.EnemyType;
 import Types.WaveType;
 import Types.UIMode;
+import Types.PlayerItemType;
 import Constants.*;
 import components.*;
 import resources.*;

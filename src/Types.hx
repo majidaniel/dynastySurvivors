@@ -76,3 +76,9 @@ enum abstract UIMode(String) to String {
 	var InGame;
 	var InStore;
 }
+
+enum abstract PlayerItemType(String) to String {
+	var TowerBuilder;
+	var MinionBoost5;
+	var MinionBoost10;
+}
