@@ -49,8 +49,8 @@ class GameSystem extends System {
 					universe.getPhase('game-logic').enable();
 				}
 			}
-			if( state.uiMode == UIMode.EndOfGame){
-				if(inputCapture.getActionStatus(GameAction.Select3)){
+			if (state.uiMode == UIMode.EndOfGame) {
+				if (inputCapture.getActionStatus(GameAction.Select3)) {
 					cleanUniverse();
 					initTestScene();
 					state.currentLevel = 1;
@@ -59,32 +59,62 @@ class GameSystem extends System {
 					universe.getPhase('game-logic').enable();
 				}
 			}
-			if(state.uiMode == UIMode.InGame){
-				if(inputCapture.getActionStatus(GameAction.Select3)){
+			if (state.uiMode == UIMode.InGame) {
+				if (inputCapture.getActionStatus(GameAction.Select3)) {
 					storeMode();
+				}
+			}
+			if (state.uiMode == UIMode.InStore) {
+				// Process store
+				var reward:PlayerItem = null;
+				if (inputCapture.getActionStatus(GameAction.Select1)) {
+					reward = state.availableItems[0];
+				}
+				if (inputCapture.getActionStatus(GameAction.Select2)) {
+					reward = state.availableItems[1];
+				}
+				if (reward != null) {
+					processReward(reward);
+					state.uiMode = UIMode.InGame;
+					universe.getPhase('game-logic').enable();
 				}
 			}
 		});
 	}
 
-	public function storeMode(){
+	public function processReward(reward:PlayerItem) {
 		setup(gameState, {
-			state.availableItems = [new PlayerItem(PlayerItemType.MinionBoost5),new PlayerItem(PlayerItemType.TowerBuilder)];
+			switch (reward.type) {
+				case PlayerItemType.MinionBoost5:
+					for (i in 0...5)
+						this.addMinion(MinionType.BasicShooter, state.playerPosition.x, state.playerPosition.y, queues);
+				case _:
+					trace('Should probably code ' + reward.type);
+			}
+		});
+	}
+
+	public function storeMode() {
+		setup(gameState, {
+			state.availableItems = [
+				new PlayerItem(PlayerItemType.MinionBoost5),
+				new PlayerItem(PlayerItemType.TowerBuilder)
+			];
 			state.uiMode = UIMode.InStore;
 			universe.getPhase('game-logic').disable();
 		});
 	}
 
-	public function cleanUniverse(){
+	public function cleanUniverse() {
 		var gameState = new GameState();
 		var queues = new Queues();
-		universe.setResources(gameState,queues);
-		iterate(worldObjects, entity->{
+		universe.setResources(gameState, queues);
+		iterate(worldObjects, entity -> {
 			universe.deleteEntity(entity);
 		});
 	}
 
-	//Todo: make levels a thing
+	// Todo: make levels a thing
 	public function initTestScene() {
 		setup(gameState, {
 			final playerObject = universe.createEntity();
