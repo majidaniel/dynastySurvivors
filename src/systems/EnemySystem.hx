@@ -49,8 +49,8 @@ class EnemySystem extends System {
 	var uniqueSpawns:Array<WaveSetup> = new Array();
 	var waveDetails:Map<WaveType, WaveData> = new Map();
 
-	override function onEnabled() {
-		super.onEnabled();
+	override public function new(u) {
+		super(u);
 
 		var dat:Array<Dynamic> = JsonMacro.load('res/enemies.json');
 		var levelData:Array<Dynamic> = JsonMacro.load('res/levels.json');
@@ -72,6 +72,10 @@ class EnemySystem extends System {
 			else if (ws.spawnAt != null)
 				uniqueSpawns.push(ws);
 		}
+	}
+
+	override function onEnabled() {
+		super.onEnabled();
 	}
 
 	override function update(_dt:Float) {
