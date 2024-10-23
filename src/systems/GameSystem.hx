@@ -7,7 +7,7 @@ import Types.MinionType;
 import ecs.Universe;
 import ecs.System;
 import Types.CollisionGroup;
-import systems.MinionSystem.MinionRequest;
+import systems.MinionSystem.MinionCreationRequest;
 import Types.UIMode;
 
 // System that is responsible for setting up levels & reacting to win conditions
@@ -88,6 +88,8 @@ class GameSystem extends System {
 				case PlayerItemType.MinionBoost5:
 					for (i in 0...5)
 						this.addMinion(MinionType.BasicShooter, state.playerPosition.x, state.playerPosition.y, queues);
+				case PlayerItemType.TowerBuilder:
+						this.addMinion(MinionType.TowerBuilder, state.playerPosition.x, state.playerPosition.y, queues);
 				case _:
 					trace('Should probably code ' + reward.type);
 			}
@@ -148,7 +150,7 @@ class GameSystem extends System {
 	}
 
 	public function addMinion(type:Types.MinionType, initX:Float, initY:Float, queues:Queues) {
-		var req:MinionRequest = {minionType: type, startPosition: new Position(initX, initY)};
+		var req:MinionCreationRequest = {minionType: type, startPosition: new Position(initX, initY)};
 		queues.queue(QueueType.MinionCreationQueue, req);
 	}
 }

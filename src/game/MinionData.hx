@@ -25,6 +25,11 @@ class MinionData {
 
 	public var components:Array<Dynamic>;
 
+	public var minionSpawn:MinionType;
+	public var minionSpawnCost:Float;
+	public var minionSpawnFrequency:Float;
+	public var minionSpawnFrequencyStart:Float;
+
 	public function new(jsonInput:Dynamic) {
 		this.type = jsonInput.type;
 
@@ -39,8 +44,14 @@ class MinionData {
 			this.upgradeQuantityFloor = jsonInput.upgradesTo.upgradeQuantityFloor;
 			this.upgradeScaffoldingCount = jsonInput.upgradesTo.upgradeScaffoldingCount;
 		}
-		if(jsonInput.components != null){
+		if (jsonInput.components != null) {
 			this.components = jsonInput.components;
+		}
+		if (jsonInput.minionSpawn != null) {
+			this.minionSpawn = jsonInput.minionSpawn;
+			this.minionSpawnCost = jsonInput.minionSpawn;
+			this.minionSpawnFrequency = jsonInput.minionSpawnFrequency;
+			this.minionSpawnFrequencyStart = jsonInput.minionSpawnFrequencyStart;
 		}
 	}
 }

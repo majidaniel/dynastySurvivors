@@ -6,7 +6,7 @@ import Types.MinionType;
 import haxe.ds.Map;
 import macros.*;
 
-typedef MinionRequest = {var minionType:MinionType; var startPosition:Position;}
+typedef MinionCreationRequest = {var minionType:MinionType; var startPosition:Position;}
 
 class MinionSystem extends System {
 	@:fullFamily var minions:{
@@ -104,7 +104,11 @@ class MinionSystem extends System {
 		universe.setComponents(follower, startPosition, new Velocity(0, 0),
 			new PlayerFollower(type, minionData.maxSpeed * (1 + (Math.random() - 0.5) * Constants.MINION_MOVE_VARIANCE), minionData.acceleration,
 				minionData.radialLevel));
-		universe.setComponents(follower, new BulletEmitter(minionData.bulletType, minionData.reloadSpeed));
+		if(minionData.bulletType != null)
+			universe.setComponents(follower, new BulletEmitter(minionData.bulletType, minionData.reloadSpeed));
+		if(minionData.minionSpawn != null){
+			universe.setComponents(follower, new MinionSpawner(minionData.minionSpawn,minionData.minionSpawnCost,minionData.minionSpawnFrequency,minionData.minionSpawnFrequencyStart));
+		}
 
 		var circleSize = 4;
 		var sprite = hxd.Res.circle_green;
@@ -117,10 +121,12 @@ class MinionSystem extends System {
 				circleSize = 12;
 			case MinionType.BasicShooter4:
 				circleSize = 30;
-			case MinionType.SlowDefender:
-				circleSize = 6;
-			case MinionType.ShooterTier2:
+			case MinionType.Tower:
 				circleSize = 10;
+				sprite = hxd.Res.square_black_grey;
+			case MinionType.TowerBuilder:
+				circleSize = 6;
+				sprite = hxd.Res.square_black_blue;
 		}
 		universe.setComponents(follower, new Sprite(sprite, displayResources.scene, circleSize, circleSize));
 	}
@@ -157,7 +163,7 @@ class MinionSystem extends System {
 	function mergeMinions(minionCount:Map<MinionType, Int>) {
 		setup(minions, {
 			for (type => count in minionCount) {
-				if (count > minionDetailsList[type].numberToUpgrade) {
+				if (minionDetailsList[type].numberToUpgrade != null && count > minionDetailsList[type].numberToUpgrade) {
 					if (minionDetailsList[type].upgradeScaffoldingCount != null) {
 						var nextTierCount:Float = 0;
 						if (minionCount.exists(minionDetailsList[type].upgradeMinion)) {
@@ -168,20 +174,23 @@ class MinionSystem extends System {
 					}
 
 					if (minionDetailsList[type].upgradeQuantityFloor == null || count > minionDetailsList[type].upgradeQuantityFloor) {
-						var req:MinionRequest = {
+						var req:MinionCreationRequest = {
 							minionType: minionDetailsList[type].upgradeMinion,
 							startPosition: new Position(state.playerPosition.x, state.playerPosition.y)
 						};
 						queues.queue(QueueType.MinionCreationQueue, req);
-						var destroyCount = minionDetailsList[type].numberToUpgrade;
-						iterate(minions, entity -> {
-							if (follower.type == type && destroyCount > 0) {
-								universe.setComponents(entity, new Decompose());
-								destroyCount--;
-							}
-						});
+						this.destroyMinions(type,minionDetailsList[type].numberToUpgrade);
 					}
 				}
+			}
+		});
+	}
+
+	function destroyMinions(minionType:MinionType,destroyCount:Int){
+		iterate(minions, entity -> {
+			if (follower.type == minionType && destroyCount > 0) {
+				universe.setComponents(entity, new Decompose());
+				destroyCount--;
 			}
 		});
 	}

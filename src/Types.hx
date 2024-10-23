@@ -45,8 +45,8 @@ enum abstract MinionType(String) to String {
 	var BasicShooter2;
 	var BasicShooter3;
 	var BasicShooter4;
-	var SlowDefender;
-	var ShooterTier2;
+	var Tower;
+	var TowerBuilder;
 }
 
 enum abstract QueueType(String) to String {
