@@ -66,22 +66,18 @@ class MinionSystem extends System {
 			state.debugMap['DPS'] = '$debug_DPS';
 		});
 		setup(sys, {
+			var minionDeletionQueue = queues.getQueue(QueueType.MinionDestructionQueue);
+			for(req in minionDeletionQueue){
+				this.destroyMinions(req.minionType,req.quantity);
+			}
+			queues.clearQueue(QueueType.MinionDestructionQueue);
+
 			var minionCreationQueue = queues.getQueue(QueueType.MinionCreationQueue);
 			for (req in minionCreationQueue) {
-				// var minionRequest:MinionRequest = req;
 				createMinion(req.minionType, req.startPosition, displayResources);
 			}
 			queues.clearQueue(QueueType.MinionCreationQueue);
 			mergeMinions(minionCount);
-			/*if (inputCapture.getActionStatus(GameAction.MergeAction)) {
-					if (!mergeActionReset) {
-						mergeMinions(minionCount);
-						mergeActionReset = true;
-						// state.debugText = "";
-					}
-				} else {
-					mergeActionReset = false;
-			}*/
 		});
 	}
 

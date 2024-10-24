@@ -33,7 +33,7 @@ class GameSystem extends System {
 		setup(gameState, {
 			if (state.xp >= 100) {
 				queues.queue(QueueType.XpQueue, new XpConsumeRequest(100, function() {
-					this.addMinion(MinionType.BasicShooter, state.playerPosition.x, state.playerPosition.y, queues);
+					this.addMinion(state.baseMinionType, state.playerPosition.x, state.playerPosition.y, queues);
 				}));
 			}
 		});
@@ -87,7 +87,7 @@ class GameSystem extends System {
 			switch (reward.type) {
 				case PlayerItemType.MinionBoost5:
 					for (i in 0...5)
-						this.addMinion(MinionType.BasicShooter, state.playerPosition.x, state.playerPosition.y, queues);
+						this.addMinion(state.baseMinionType, state.playerPosition.x, state.playerPosition.y, queues);
 				case PlayerItemType.TowerBuilder:
 						this.addMinion(MinionType.TowerBuilder, state.playerPosition.x, state.playerPosition.y, queues);
 				case _:
@@ -134,7 +134,7 @@ class GameSystem extends System {
 				hp, new DecomposeEffects([this.endGame]));
 
 			for (i in 0...initialMinions)
-				addMinion(MinionType.BasicShooter, state.playerPosition.x, state.playerPosition.y, queues);
+				addMinion(state.baseMinionType, state.playerPosition.x, state.playerPosition.y, queues);
 		});
 	}
 

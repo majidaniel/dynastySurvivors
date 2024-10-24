@@ -1,5 +1,6 @@
 package resources;
 
+import Types.MinionType;
 import game.PlayerItem;
 import Types.UIMode;
 import components.HealthContainer;
@@ -26,6 +27,8 @@ class GameState {
     public var ticksElapsed:Float=0;
 
 	public var availableItems:Array<PlayerItem>;
+
+	public var baseMinionType:MinionType = MinionType.BasicShooter;
 
 	public function new() {}
 }

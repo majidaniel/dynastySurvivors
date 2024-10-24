@@ -54,6 +54,7 @@ enum abstract QueueType(String) to String {
 	var XpQueue;
 	var EnemyCreationQueue;
 	var ParticleCreationQueue;
+	var MinionDestructionQueue;
 }
 
 enum abstract EnemyType(String) to String {

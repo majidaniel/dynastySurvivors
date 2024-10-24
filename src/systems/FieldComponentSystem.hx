@@ -11,7 +11,7 @@ class FieldComponentSystem extends System {
 	}
 	@:fullFamily var minionSpawners:{
 		requires:{minionSpawner:MinionSpawner, position:Position, velocity:Velocity},
-		resources:{queues:Queues}
+		resources:{queues:Queues, state:GameState}
 	}
 
 	override function update(_dt:Float) {
@@ -45,6 +45,8 @@ class FieldComponentSystem extends System {
 					queues.queue(QueueType.MinionCreationQueue, req);
 					//TODO: spend minons
 					minionSpawner.nextSpawn = minionSpawner.frequency;
+					if(minionSpawner.cost != null)
+						queues.queueMinionDeletionRequest(state.baseMinionType, minionSpawner.cost);
 				}
 			});
 		});

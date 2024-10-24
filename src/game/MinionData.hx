@@ -26,7 +26,7 @@ class MinionData {
 	public var components:Array<Dynamic>;
 
 	public var minionSpawn:MinionType;
-	public var minionSpawnCost:Float;
+	public var minionSpawnCost:Int;
 	public var minionSpawnFrequency:Float;
 	public var minionSpawnFrequencyStart:Float;
 
@@ -49,7 +49,7 @@ class MinionData {
 		}
 		if (jsonInput.minionSpawn != null) {
 			this.minionSpawn = jsonInput.minionSpawn;
-			this.minionSpawnCost = jsonInput.minionSpawn;
+			this.minionSpawnCost = jsonInput.minionSpawnCost;
 			this.minionSpawnFrequency = jsonInput.minionSpawnFrequency;
 			this.minionSpawnFrequencyStart = jsonInput.minionSpawnFrequencyStart;
 		}
