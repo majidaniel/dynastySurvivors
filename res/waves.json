@@ -26,11 +26,15 @@
         "enemyDistribution": [
             {
                 "type": "BasicFollowEnemy",
-                "probability": 0.5
+                "probability": 0.3
             },
             {
                 "type": "LargeFollowEnemy",
                 "probability": 0.5
+            },
+            {
+                "type":"QuickSmallFollowEnemy",
+                "probability":0.2
             }
         ]
     },
@@ -39,7 +43,11 @@
         "enemyDistribution": [
             {
                 "type": "LargeFollowEnemy",
-                "probability": 1.0
+                "probability": 0.3
+            },
+            {
+                "type":"QuickSmallFollowEnemy",
+                "probability":0.3
             }
         ]
     },
