@@ -43,10 +43,12 @@ class GameSystem extends System {
 	public function handleUIInput() {
 		setup(gameState, {
 			if (state.uiMode == UIMode.MainMenu) {
-				if (inputCapture.getActionStatus(GameAction.Select1)) {
+				if (inputCapture.getActionStatus(GameAction.Select1,true)) {
 					initTestScene();
 					state.uiMode = UIMode.InGame;
 					universe.getPhase('game-logic').enable();
+					storeMode();
+					return;
 				}
 			}
 			if (state.uiMode == UIMode.EndOfGame) {
@@ -60,9 +62,9 @@ class GameSystem extends System {
 				}
 			}
 			if (state.uiMode == UIMode.InGame) {
-				if (inputCapture.getActionStatus(GameAction.Select3)) {
-					storeMode();
-				}
+				//if (inputCapture.getActionStatus(GameAction.Select3)) {
+					//storeMode();
+				//}
 			}
 			if (state.uiMode == UIMode.InStore) {
 				// Process store

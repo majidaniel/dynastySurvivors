@@ -33,7 +33,7 @@ class InputCapture {
 		this.pad=p;
 	  }
 
-
+	public var waitingForClear:Bool=false;
 	public function onEvent(event:hxd.Event) {
 		switch (event.kind) {
 			case EKeyDown:
@@ -41,6 +41,7 @@ class InputCapture {
 				if (actionType != null)
 					actionStatus.set(actionType, true);
 			case EKeyUp:
+				this.waitingForClear = false;
 				var actionType = keycodeMap.get(event.keyCode);
 				if (actionType != null)
 					actionStatus.set(actionType, false);
@@ -48,10 +49,14 @@ class InputCapture {
 		}
 	}
 
-	public function getActionStatus(gameAction:GameAction) {
+	public function getActionStatus(gameAction:GameAction,waitForClear=false) {
+		if(this.waitingForClear)
+			return false;
+
 		var status = actionStatus.get(gameAction);
 		if (status == null)
 			return false;
+		this.waitingForClear=waitForClear;
 		return status;
 	}
 }
