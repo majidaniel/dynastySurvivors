@@ -108,6 +108,8 @@ class MinionSystem extends System {
 
 		var circleSize = 4;
 		var sprite = hxd.Res.circle_green;
+		
+		
 		switch (type) {
 			case MinionType.BasicShooter:
 				circleSize = 4;

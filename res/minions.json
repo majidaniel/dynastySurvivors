@@ -67,5 +67,13 @@
         "minionSpawnCost":5,
         "minionSpawnFrequency":30,
         "minionSpawnFrequencyStart":15
+    },
+    {
+        "type": "BombImbuer",
+        "reloadSpeed": 0.5,
+        "maxSpeed": 175.0,
+        "acceleration": 1000.0,
+        "radialLevel": 2,
+        "bulletType": "ImbueBomb"
     }
 ]
