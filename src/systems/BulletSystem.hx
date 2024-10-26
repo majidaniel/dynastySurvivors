@@ -54,6 +54,10 @@ class BulletSystem extends System {
 			bulletSpeed = 200;
 			decayDistance = 200;
 			sprite = new Sprite(hxd.Res.circle, displayResources.scene, 3, 3);
+		}else if(type == BulletType.BombApplier){
+			bulletSpeed = 200;
+			decayDistance = 1000;
+			sprite = new Sprite(hxd.Res.circle_black_border_red,displayResources.scene, 5,5);
 		}
 
 		velocity *= bulletSpeed;
@@ -76,6 +80,8 @@ class BulletSystem extends System {
 		for (vel in velocityArray) {
 			var bullet = universe.createEntity();
 			var pendEffects = new PendingEffects(ColissionEffectType.Damage, Constants.BASE_BULLET_DAMAGE);
+			if(type == BulletType.BombApplier)
+				pendEffects = new PendingEffects(ColissionEffectType.BombApply, Constants.BASE_BULLET_DAMAGE);
 			// pendEffects.addEffect(ColissionEffectType.Particles,0);
 			var position = new Position(startX, startY);
 			var decomposeEffects = new DecomposeEffects([

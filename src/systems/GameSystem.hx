@@ -43,7 +43,7 @@ class GameSystem extends System {
 	public function handleUIInput() {
 		setup(gameState, {
 			if (state.uiMode == UIMode.MainMenu) {
-				if (inputCapture.getActionStatus(GameAction.Select1,true)) {
+				if (inputCapture.getActionStatus(GameAction.Select1, true)) {
 					initTestScene();
 					state.uiMode = UIMode.InGame;
 					universe.getPhase('game-logic').enable();
@@ -62,9 +62,9 @@ class GameSystem extends System {
 				}
 			}
 			if (state.uiMode == UIMode.InGame) {
-				//if (inputCapture.getActionStatus(GameAction.Select3)) {
-					//storeMode();
-				//}
+				// if (inputCapture.getActionStatus(GameAction.Select3)) {
+				// storeMode();
+				// }
 			}
 			if (state.uiMode == UIMode.InStore) {
 				// Process store
@@ -74,6 +74,9 @@ class GameSystem extends System {
 				}
 				if (inputCapture.getActionStatus(GameAction.Select2)) {
 					reward = state.availableItems[1];
+				}
+				if (inputCapture.getActionStatus(GameAction.Select3)) {
+					reward = state.availableItems[2];
 				}
 				if (reward != null) {
 					processReward(reward);
@@ -91,7 +94,9 @@ class GameSystem extends System {
 					for (i in 0...5)
 						this.addMinion(state.baseMinionType, state.playerPosition.x, state.playerPosition.y, queues);
 				case PlayerItemType.TowerBuilder:
-						this.addMinion(MinionType.TowerBuilder, state.playerPosition.x, state.playerPosition.y, queues);
+					this.addMinion(MinionType.TowerBuilder, state.playerPosition.x, state.playerPosition.y, queues);
+				case PlayerItemType.BombImbuer:
+					this.addMinion(MinionType.BombImbuer, state.playerPosition.x, state.playerPosition.y, queues);
 				case _:
 					trace('Should probably code ' + reward.type);
 			}
@@ -102,7 +107,8 @@ class GameSystem extends System {
 		setup(gameState, {
 			state.availableItems = [
 				new PlayerItem(PlayerItemType.MinionBoost5),
-				new PlayerItem(PlayerItemType.TowerBuilder)
+				new PlayerItem(PlayerItemType.TowerBuilder),
+				new PlayerItem(PlayerItemType.BombImbuer)
 			];
 			state.uiMode = UIMode.InStore;
 			universe.getPhase('game-logic').disable();

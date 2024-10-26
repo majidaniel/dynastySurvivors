@@ -13,6 +13,9 @@ class PlayerItem{
             case PlayerItemType.TowerBuilder:
                 this.baseCost=5;
                 this.name = "Tower Builder";
+            case PlayerItemType.BombImbuer:
+                this.baseCost = 0;
+                this.name = "Bomb imbuer";
             case _:
                 trace('Should probably code $type');
         }

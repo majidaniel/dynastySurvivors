@@ -26,6 +26,7 @@ enum abstract ColissionEffectType(Int) to Int {
 	var Damage;
 	var FullConsume;
 	var Particles;
+	var BombApply;
 }
 
 enum abstract BulletType(String) to String {
@@ -34,6 +35,7 @@ enum abstract BulletType(String) to String {
 	var Basic5;
 	var Basic10;
 	var Melee;
+	var BombApplier;
 }
 
 enum abstract BulletTargetingPriority(Int) to Int {
@@ -47,6 +49,7 @@ enum abstract MinionType(String) to String {
 	var BasicShooter4;
 	var Tower;
 	var TowerBuilder;
+	var BombImbuer;
 }
 
 enum abstract QueueType(String) to String {
@@ -82,4 +85,5 @@ enum abstract PlayerItemType(String) to String {
 	var TowerBuilder;
 	var MinionBoost5;
 	var MinionBoost10;
+	var BombImbuer;
 }

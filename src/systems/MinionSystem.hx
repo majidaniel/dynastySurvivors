@@ -125,6 +125,8 @@ class MinionSystem extends System {
 			case MinionType.TowerBuilder:
 				circleSize = 6;
 				sprite = hxd.Res.square_black_blue;
+			case MinionType.BombImbuer:
+				sprite = hxd.Res.square_black_red;
 		}
 		universe.setComponents(follower, new Sprite(sprite, displayResources.scene, circleSize, circleSize));
 	}
