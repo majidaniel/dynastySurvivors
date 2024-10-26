@@ -74,6 +74,6 @@
         "maxSpeed": 175.0,
         "acceleration": 1000.0,
         "radialLevel": 2,
-        "bulletType": "ImbueBomb"
+        "bulletType": "BombApplier"
     }
 ]

@@ -34,12 +34,13 @@ class Main extends hxd.App {
 						XpSystem,
 						EnemySystem,
 						MinionSystem,
-						FieldComponentSystem,
+						SpawnerSystem,
 						BulletSystem,
 						MoveSystem,
 						DecaySystem,
 						CollisionDetectionSystem,
 						CollisionResolutionSystem,
+						EffectResolutionSystem,
 						DecompositionSystem
 					],
 					enabled: false

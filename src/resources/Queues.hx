@@ -1,9 +1,10 @@
 package resources;
 
+import ecs.Entity;
 import Types.QueueType;
 
 typedef MinionDeletionRequest = {var minionType:MinionType; var quantity:Int;}
-
+typedef HpEffectRequest = {public var entity:Entity; public var amount:Float;}
 
 class Queues {
 	private var queues:Map<String, Array<Dynamic>> = new Map();
@@ -17,7 +18,8 @@ class Queues {
 		queues.set(QueueType.XpQueue, new Array());
 		queues.set(QueueType.EnemyCreationQueue, new Array());
 		queues.set(QueueType.ParticleCreationQueue, new Array());
-		queues.set(QueueType.MinionDestructionQueue,new Array());
+		queues.set(QueueType.MinionDestructionQueue, new Array());
+		queues.set(QueueType.HpEffectQueue, new Array());
 	}
 
 	public function queue(type:QueueType, request:Dynamic) {
@@ -28,12 +30,17 @@ class Queues {
 		queues.set(type, new Array());
 	}
 
-	public function getQueue(type:QueueType) {
+	public function getQueue(type:QueueType):Array<Dynamic> {
 		return queues.get(type);
 	}
 
-	public function queueMinionDeletionRequest( minionType:MinionType, quantity:Int){
+	public function queueMinionDeletionRequest(minionType:MinionType, quantity:Int) {
 		var req:MinionDeletionRequest = {minionType: minionType, quantity: quantity};
-		this.queue(QueueType.MinionDestructionQueue,req);
+		this.queue(QueueType.MinionDestructionQueue, req);
+	}
+
+	public function queueHpEffect(entity:Entity, hpAmount:Float) {
+		var req:HpEffectRequest = {entity: entity, amount: hpAmount};
+		this.queue(QueueType.HpEffectQueue, req);
 	}
 }

@@ -4,7 +4,7 @@ import systems.MinionSystem.MinionCreationRequest;
 import systems.EnemySystem.EnemyCreationRequest;
 
 // Misc components attached to enemies and minions, merge with bullet system at some point?
-class FieldComponentSystem extends System {
+class SpawnerSystem extends System {
 	@:fullFamily var enemySpawners:{
 		requires:{enemySpawner:EnemySpawner, position:Position, velocity:Velocity},
 		resources:{queues:Queues}

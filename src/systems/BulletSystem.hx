@@ -55,7 +55,7 @@ class BulletSystem extends System {
 			decayDistance = 200;
 			sprite = new Sprite(hxd.Res.circle, displayResources.scene, 3, 3);
 		}else if(type == BulletType.BombApplier){
-			bulletSpeed = 200;
+			bulletSpeed = 300;
 			decayDistance = 1000;
 			sprite = new Sprite(hxd.Res.circle_black_border_red,displayResources.scene, 5,5);
 		}
@@ -76,7 +76,6 @@ class BulletSystem extends System {
 				velocity.x * Math.sin(angle * Math.PI / 180) + velocity.y * Math.cos(angle * Math.PI / 180)));
 		}
 
-		// TODO: sprite hard coded here, change based on type above
 		for (vel in velocityArray) {
 			var bullet = universe.createEntity();
 			var pendEffects = new PendingEffects(ColissionEffectType.Damage, Constants.BASE_BULLET_DAMAGE);
@@ -92,7 +91,7 @@ class BulletSystem extends System {
 				}
 			]);
 
-			universe.setComponents(bullet, position, new Velocity(vel.x, vel.y), new Sprite(hxd.Res.circle, displayResources.scene, 3, 3),
+			universe.setComponents(bullet, position, new Velocity(vel.x, vel.y), sprite,
 				new Collidable(CollisionGroup.PlayerBullet, [CollisionGroup.Enemy], pendEffects, 3), new HealthContainer(1),
 				new DecayOnDistance(decayDistance), decomposeEffects);
 		}

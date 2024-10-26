@@ -28,13 +28,7 @@ class CollisionResolutionSystem extends System {
 					if (skipOut)
 						continue;
 					if (effect.type == ColissionEffectType.Damage) {
-						healthContainer.hpAmount -= effect.amount;
-						if (healthContainer.hpAmount <= 0) {
-							universe.setComponents(entity, new Decompose());
-							// TODO: offload to destruction system
-							// universe.deleteEntity(entity);
-							// skipOut = true;
-						}
+						queues.queueHpEffect(entity, -1 * effect.amount);
 					} else if (effect.type == ColissionEffectType.FullConsume) {
 						// universe.deleteEntity(entity);
 						universe.setComponents(entity, new Decompose());
@@ -42,6 +36,8 @@ class CollisionResolutionSystem extends System {
 					} else if (effect.type == ColissionEffectType.Particles) {
 						var req:ParticlesRequest = {startPosition: new Position(position.x,position.y), quantity:0};
 						queues.queue(QueueType.ParticleCreationQueue, req);
+					}else if (effect.type == ColissionEffectType.BombApply){
+						
 					}
 				}
 
