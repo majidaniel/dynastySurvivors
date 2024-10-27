@@ -71,7 +71,6 @@ class ParticleSystem extends System {
 				particles.onEnd = function() {
 					// If none of the groups in this particle system are set to looping
 					// this method will fire once the system is done emitting particles
-					trace("end");
 					particles.remove();
 				}
 			}

@@ -1,10 +1,12 @@
 package resources;
 
+import haxe.Constraints.Function;
 import ecs.Entity;
 import Types.QueueType;
 
 typedef MinionDeletionRequest = {var minionType:MinionType; var quantity:Int;}
 typedef HpEffectRequest = {public var entity:Entity; public var amount:Float;}
+typedef StatusEffectRequest = {public var entity:Entity; public var statusEffect:StatusEffect;}
 
 class Queues {
 	private var queues:Map<String, Array<Dynamic>> = new Map();
@@ -20,6 +22,7 @@ class Queues {
 		queues.set(QueueType.ParticleCreationQueue, new Array());
 		queues.set(QueueType.MinionDestructionQueue, new Array());
 		queues.set(QueueType.HpEffectQueue, new Array());
+		queues.set(QueueType.StatusEffectQueue, new Array());
 	}
 
 	public function queue(type:QueueType, request:Dynamic) {
@@ -42,5 +45,10 @@ class Queues {
 	public function queueHpEffect(entity:Entity, hpAmount:Float) {
 		var req:HpEffectRequest = {entity: entity, amount: hpAmount};
 		this.queue(QueueType.HpEffectQueue, req);
+	}
+
+	public function queueStatusEffect(entity:Entity, statusEffect:StatusEffect){
+		var req:StatusEffectRequest = {entity:entity, statusEffect:statusEffect};
+		this.queue(QueueType.StatusEffectQueue,req);
 	}
 }

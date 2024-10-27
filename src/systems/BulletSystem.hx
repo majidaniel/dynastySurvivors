@@ -23,7 +23,7 @@ class BulletSystem extends System {
 	public override function update(dt:Float) {
 		super.update(dt);
 		setup(emitters, {
-			iterate(emitters, {
+			iterate(emitters, entity -> {
 				bulletEmitter.timeToNextEmission -= dt;
 				if (bulletEmitter.timeToNextEmission < 0) {
 					cacheEnemyStats();
@@ -37,6 +37,12 @@ class BulletSystem extends System {
 
 					addBullet(bulletEmitter.bulletType, position.x, position.y, velocity, displayResources,queues);
 					bulletEmitter.timeToNextEmission = bulletEmitter.reloadSpeed * (1 + (Math.random() - .5) * Constants.MINION_RELOAD_VARIANCE);
+
+					if(bulletEmitter.maximumShots != null){
+						bulletEmitter.maximumShots --;
+						if(bulletEmitter.maximumShots <= 0)
+							universe.removeComponents(entity,bulletEmitter);
+					}
 				}
 			});
 		});
@@ -80,7 +86,7 @@ class BulletSystem extends System {
 			var bullet = universe.createEntity();
 			var pendEffects = new PendingEffects(ColissionEffectType.Damage, Constants.BASE_BULLET_DAMAGE);
 			if(type == BulletType.BombApplier)
-				pendEffects = new PendingEffects(ColissionEffectType.BombApply, Constants.BASE_BULLET_DAMAGE);
+				pendEffects = new PendingEffects(ColissionEffectType.BombImbue, Constants.BASE_BULLET_DAMAGE);
 			// pendEffects.addEffect(ColissionEffectType.Particles,0);
 			var position = new Position(startX, startY);
 			var decomposeEffects = new DecomposeEffects([

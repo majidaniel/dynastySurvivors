@@ -22,22 +22,16 @@ class CollisionResolutionSystem extends System {
 	override function update(_dt:Float) {
 		setup(collissionsWithEffects, {
 			iterate(collissionsWithEffects, entity -> {
-				// Avoid calling deleteEntity multiple times
-				var skipOut = false;
 				for (effect in pendingEffect.pendingEffects) {
-					if (skipOut)
-						continue;
 					if (effect.type == ColissionEffectType.Damage) {
 						queues.queueHpEffect(entity, -1 * effect.amount);
 					} else if (effect.type == ColissionEffectType.FullConsume) {
-						// universe.deleteEntity(entity);
 						universe.setComponents(entity, new Decompose());
-						// skipOut = true;
 					} else if (effect.type == ColissionEffectType.Particles) {
-						var req:ParticlesRequest = {startPosition: new Position(position.x,position.y), quantity:0};
+						var req:ParticlesRequest = {startPosition: new Position(position.x, position.y), quantity: 0};
 						queues.queue(QueueType.ParticleCreationQueue, req);
-					}else if (effect.type == ColissionEffectType.BombApply){
-						
+					} else if (effect.type == ColissionEffectType.BombImbue) {
+						queues.queueStatusEffect(entity, new StatusEffect(StatusEffectType.Bomb));
 					}
 				}
 
