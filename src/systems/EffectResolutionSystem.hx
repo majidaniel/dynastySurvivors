@@ -1,5 +1,6 @@
 package systems;
 
+import h2d.filter.Glow;
 import resources.Queues.StatusEffectRequest;
 import resources.Queues.HpEffectRequest;
 import ecs.Entity;
@@ -23,6 +24,15 @@ class EffectResolutionSystem extends System {
 		},
 		resources:{queues:Queues}
 	};
+	@:fullFamily var sprites:{
+		requires:{
+			sprite:Sprite
+		}
+	};
+	@:fullFamily var alphaDecayers:{
+		requires:{alphaDecay:AlphaDecay, sprite:Sprite},
+		resources:{}
+	};
 
 	override function update(_dt:Float) {
 		setup(healthContainers, {
@@ -41,6 +51,7 @@ class EffectResolutionSystem extends System {
 
 		setup(decomposers, {
 			for (req in queues.getQueue(QueueType.StatusEffectQueue)) {
+				// Concat decompose effects
 				var re:StatusEffectRequest = req;
 				var ent:Entity = re.entity;
 				var decomposeEffect = new DecomposeEffects();
@@ -48,11 +59,17 @@ class EffectResolutionSystem extends System {
 				switch (re.statusEffect.type) {
 					case StatusEffectType.Bomb:
 						fetch(positions, ent, {
+							var blastSize:Int = 1;
+							fetch(healthContainers, ent, {
+								if (healthContainer != null && healthContainer.initialHpAmount > 1) {
+									blastSize = Math.ceil(Math.log(healthContainer.initialHpAmount) * Math.log(Math.log(healthContainer.initialHpAmount)) * 2  * (1 + Math.random() * 0.5));
+								}
+							});
 							decomposeEffect.addEffect(function() {
 								var explosionGenerator = universe.createEntity();
 								universe.setComponents(explosionGenerator, new Position(position.x, position.y));
-                                //TODO: replace basic10 with bomb
-                                universe.setComponents(explosionGenerator, new BulletEmitter(BulletType.Bomb,0.1,BulletTargetingPriority.Closest,1));
+								universe.setComponents(explosionGenerator,
+									new BulletEmitter(BulletType.Bomb, 0.05, BulletTargetingPriority.Closest, blastSize));
 							});
 						});
 					case _:
@@ -66,8 +83,20 @@ class EffectResolutionSystem extends System {
 				});
 
 				universe.setComponents(ent, decomposeEffect);
+
+				// Alter visuals
+				fetch(sprites, ent, {
+					sprite.bitmap.filter = new Glow(0xffdf27, 1, 3);
+				});
 			}
 			queues.clearQueue(QueueType.StatusEffectQueue);
+		});
+
+		setup(alphaDecayers, {
+			iterate(alphaDecayers, {
+				alphaDecay.currentTime += _dt;
+				sprite.bitmap.alpha = Math.max(0, 1 - alphaDecay.currentTime / alphaDecay.timeToDecay);
+			});
 		});
 	}
 }

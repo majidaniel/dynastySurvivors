@@ -17,13 +17,13 @@ class DecaySystem extends System {
 			var distMoved:Float = position.vector.distance(decayOnDistance.lastPosition.vector);
 			decayOnDistance.distanceRemaining -= distMoved;
 			if (decayOnDistance.distanceRemaining <= 0)
-				universe.setComponents(entity, new Decompose(false));
-            decayOnDistance.lastPosition = new Position(position.x,position.y);
+				universe.setComponents(entity, new Decompose(decayOnDistance.triggerDecomposeEffects));
+			decayOnDistance.lastPosition = new Position(position.x, position.y);
 		});
 		iterate(decayByTime, entity -> {
 			decayOnTime.timeRemaining -= _dt;
-			if(decayOnTime.timeRemaining <= 0){
-				universe.setComponents(entity, new Decompose(false));
+			if (decayOnTime.timeRemaining <= 0) {
+				universe.setComponents(entity, new Decompose(decayOnTime.triggerDecomposeEffects));
 			}
 		});
 	}
