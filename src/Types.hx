@@ -44,6 +44,7 @@ enum abstract BulletType(String) to String {
 
 enum abstract BulletTargetingPriority(Int) to Int {
 	var Closest;
+	var Random;
 }
 
 enum abstract MinionType(String) to String {

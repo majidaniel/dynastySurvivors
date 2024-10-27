@@ -51,6 +51,7 @@ class EffectResolutionSystem extends System {
 							decomposeEffect.addEffect(function() {
 								var explosionGenerator = universe.createEntity();
 								universe.setComponents(explosionGenerator, new Position(position.x, position.y));
+                                //TODO: replace basic10 with bomb
                                 universe.setComponents(explosionGenerator, new BulletEmitter(BulletType.Basic10,0.1,BulletTargetingPriority.Closest,1));
 							});
 						});
