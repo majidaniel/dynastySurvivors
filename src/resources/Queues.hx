@@ -1,5 +1,6 @@
 package resources;
 
+import h2d.Particles.PartEmitMode;
 import haxe.Constraints.Function;
 import ecs.Entity;
 import Types.QueueType;
@@ -7,6 +8,7 @@ import Types.QueueType;
 typedef MinionDeletionRequest = {var minionType:MinionType; var quantity:Int;}
 typedef HpEffectRequest = {public var entity:Entity; public var amount:Float;}
 typedef StatusEffectRequest = {public var entity:Entity; public var statusEffect:StatusEffect;}
+typedef ParticlesRequest = {var startPosition:Position; var quantity:Float; var velocity:Velocity; var emitMode:PartEmitMode;}
 
 class Queues {
 	private var queues:Map<String, Array<Dynamic>> = new Map();

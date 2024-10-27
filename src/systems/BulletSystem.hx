@@ -1,6 +1,7 @@
 package systems;
 
-import systems.ParticleSystem.ParticlesRequest;
+import h2d.Particles.PartEmitMode;
+import resources.Queues.ParticlesRequest;
 
 // System that is responsible for setting up levels & reacting to win conditions
 class BulletSystem extends System {
@@ -112,7 +113,7 @@ class BulletSystem extends System {
 
 			var decomposeEffects = new DecomposeEffects([
 				function() {
-					var req:ParticlesRequest = {startPosition: new Position(position.x, position.y), quantity: 0};
+					var req:ParticlesRequest = {startPosition: new Position(position.x, position.y), quantity: 0, velocity: new Velocity(velocity.vector.x,velocity.vector.y), emitMode: PartEmitMode.Point};
 					queues.queue(QueueType.ParticleCreationQueue, req);
 				}
 			]);
@@ -136,8 +137,6 @@ class BulletSystem extends System {
 			decayTime:DecayOnTime, pendingEffects:PendingEffects = null, hpContainer:HealthContainer, decomposeEffects:DecomposeEffects) {
 		setup(emitters, {
 			var bullet = universe.createEntity();
-
-			// pendEffects.addEffect(ColissionEffectType.Particles,0);
 
 			universe.setComponents(bullet, position, velocity, sprite,
 				new Collidable(CollisionGroup.PlayerBullet, [CollisionGroup.Enemy], pendingEffects, collideSize), hpContainer, decomposeEffects);
