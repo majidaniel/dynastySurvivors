@@ -9,8 +9,8 @@
         "upgradesTo": {
             "numberToUpgrade": 5,
             "upgradeMinionType": "BasicShooter2",
-            "upgradeQuantityFloor":15,
-            "upgradeScaffoldingCount":5
+            "upgradeQuantityFloor": 15,
+            "upgradeScaffoldingCount": 5
         }
     },
     {
@@ -23,8 +23,8 @@
         "upgradesTo": {
             "numberToUpgrade": 3,
             "upgradeMinionType": "BasicShooter3",
-            "upgradeQuantityFloor":6,
-            "upgradeScaffoldingCount":6
+            "upgradeQuantityFloor": 6,
+            "upgradeScaffoldingCount": 6
         }
     },
     {
@@ -37,8 +37,8 @@
         "upgradesTo": {
             "numberToUpgrade": 3,
             "upgradeMinionType": "BasicShooter4",
-            "upgradeQuantityFloor":6,
-            "upgradeScaffoldingCount":6
+            "upgradeQuantityFloor": 6,
+            "upgradeScaffoldingCount": 6
         }
     },
     {
@@ -63,17 +63,18 @@
         "maxSpeed": 50.0,
         "acceleration": 20.0,
         "radialLevel": 2,
-        "minionSpawn":"Tower",
-        "minionSpawnCost":5,
-        "minionSpawnFrequency":30,
-        "minionSpawnFrequencyStart":15
+        "minionSpawn": "Tower",
+        "minionSpawnCost": 5,
+        "minionSpawnFrequency": 30,
+        "minionSpawnFrequencyStart": 15
     },
     {
         "type": "BombImbuer",
-        "reloadSpeed": 3.0,
+        "reloadSpeed": 2.0,
         "maxSpeed": 175.0,
         "acceleration": 1000.0,
         "radialLevel": 2,
-        "bulletType": "BombApplier"
+        "bulletType": "BombApplier",
+        "bulletTargetingPriority": "Random"
     }
 ]

@@ -30,6 +30,8 @@ class MinionData {
 	public var minionSpawnFrequency:Float;
 	public var minionSpawnFrequencyStart:Float;
 
+	public var bulletTargetingPriority:BulletTargetingPriority;
+
 	public function new(jsonInput:Dynamic) {
 		this.type = jsonInput.type;
 
@@ -53,5 +55,7 @@ class MinionData {
 			this.minionSpawnFrequency = jsonInput.minionSpawnFrequency;
 			this.minionSpawnFrequencyStart = jsonInput.minionSpawnFrequencyStart;
 		}
+		if (jsonInput.bulletTargetingPriority != null)
+			this.bulletTargetingPriority = jsonInput.bulletTargetingPriority;
 	}
 }

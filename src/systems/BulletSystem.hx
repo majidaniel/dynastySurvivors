@@ -35,24 +35,24 @@ class BulletSystem extends System {
 					else
 						velocity = new Vector(targetPosition.x - position.x, targetPosition.y - position.y).normalized();
 
-					addBullet(bulletEmitter.bulletType, position.x, position.y, velocity, displayResources,queues);
+					addBullet(bulletEmitter.bulletType, position.x, position.y, velocity, displayResources, queues);
 					bulletEmitter.timeToNextEmission = bulletEmitter.reloadSpeed * (1 + (Math.random() - .5) * Constants.MINION_RELOAD_VARIANCE);
 
-					if(bulletEmitter.maximumShots != null){
-						bulletEmitter.maximumShots --;
-						if(bulletEmitter.maximumShots <= 0)
-							universe.removeComponents(entity,bulletEmitter);
+					if (bulletEmitter.maximumShots != null) {
+						bulletEmitter.maximumShots--;
+						if (bulletEmitter.maximumShots <= 0)
+							universe.removeComponents(entity, bulletEmitter);
 					}
 				}
 			});
 		});
 	}
 
-	public function addBullet(type:BulletType, startX:Float, startY:Float, velocity:Vector, displayResources:DisplayResources,queues:Queues) {
+	public function addBullet(type:BulletType, startX:Float, startY:Float, velocity:Vector, displayResources:DisplayResources, queues:Queues) {
 		var bulletSpeed = 1;
 		var decayDistance:Float = 0;
 		var sprite:Sprite = null;
-		var decayTime:Float=0;
+		var decayTime:Float = 0;
 		var collideSize = 3;
 		var hpAmount = 1;
 		if (type == BulletType.Melee) {
@@ -63,15 +63,15 @@ class BulletSystem extends System {
 			bulletSpeed = 200;
 			decayDistance = 200;
 			sprite = new Sprite(hxd.Res.circle, displayResources.scene, 3, 3);
-		}else if(type == BulletType.BombApplier){
+		} else if (type == BulletType.BombApplier) {
 			bulletSpeed = 300;
 			decayDistance = 1000;
-			sprite = new Sprite(hxd.Res.circle_black_border_red,displayResources.scene, 5,5);
-		}else if(type == BulletType.Bomb){
-			sprite = new Sprite(hxd.Res.circle_orange,displayResources.scene, 100,100);
+			sprite = new Sprite(hxd.Res.circle_black_border_red, displayResources.scene, 5, 5);
+		} else if (type == BulletType.Bomb) {
+			sprite = new Sprite(hxd.Res.circle_orange, displayResources.scene, 100, 100);
 			bulletSpeed = 0;
 			decayTime = 0.5;
-			collideSize=50;
+			collideSize = 50;
 			hpAmount = 1000;
 		}
 
@@ -94,46 +94,46 @@ class BulletSystem extends System {
 		for (vel in velocityArray) {
 			var bullet = universe.createEntity();
 			var pendEffects = new PendingEffects(ColissionEffectType.Damage, Constants.BASE_BULLET_DAMAGE);
-			if(type == BulletType.BombApplier)
+			if (type == BulletType.BombApplier)
 				pendEffects = new PendingEffects(ColissionEffectType.BombImbue, Constants.BASE_BULLET_DAMAGE);
 			// pendEffects.addEffect(ColissionEffectType.Particles,0);
 			var position = new Position(startX, startY);
 			var decomposeEffects = new DecomposeEffects([
-				function()
-				{
+				function() {
 					var req:ParticlesRequest = {startPosition: new Position(position.x, position.y), quantity: 0};
 					queues.queue(QueueType.ParticleCreationQueue, req);
 				}
 			]);
 
 			universe.setComponents(bullet, position, new Velocity(vel.x, vel.y), sprite,
-				new Collidable(CollisionGroup.PlayerBullet, [CollisionGroup.Enemy], pendEffects, collideSize), new HealthContainer(hpAmount),
-				decomposeEffects);
-			if(decayDistance != 0){
-				universe.setComponents(bullet,new DecayOnDistance(decayDistance));
+				new Collidable(CollisionGroup.PlayerBullet, [CollisionGroup.Enemy], pendEffects, collideSize), new HealthContainer(hpAmount), decomposeEffects);
+			if (decayDistance != 0) {
+				universe.setComponents(bullet, new DecayOnDistance(decayDistance));
 			}
-			if(decayTime != 0){
-				universe.setComponents(bullet,new DecayOnTime(decayTime));
+			if (decayTime != 0) {
+				universe.setComponents(bullet, new DecayOnTime(decayTime));
 			}
 		}
 	}
 
 	private function determineTargetPosition(type:BulletTargetingPriority, originPosition:Position, targetPositions:Array<Position>):Position {
-		if (targetPositions.length == 0)
-			return null;
-
 		if (type == BulletTargetingPriority.Closest) {
-			var tarPosition:Position = null;
-			var tarDistance:Float = 99999;
-			for (pos in targetPositions) {
-				if (tarDistance > pos.vector.distance(originPosition.vector)) {
-					tarPosition = pos;
-					tarDistance = pos.vector.distance(originPosition.vector);
+			if (targetPositions.length > 0) {
+				var tarPosition:Position = null;
+				var tarDistance:Float = 99999;
+				for (pos in targetPositions) {
+					if (tarDistance > pos.vector.distance(originPosition.vector)) {
+						tarPosition = pos;
+						tarDistance = pos.vector.distance(originPosition.vector);
+					}
 				}
+				return tarPosition;
 			}
-			return tarPosition;
 		}
-		return null;
+
+		// Default to random
+		// if (type == BulletTargetingPriority.Random)
+		return new Position(Math.random() - 0.5 + originPosition.x, Math.random() - 0.5 + originPosition.y);
 	}
 
 	private function cacheEnemyStats() {

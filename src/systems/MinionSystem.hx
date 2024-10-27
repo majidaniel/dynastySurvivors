@@ -100,8 +100,13 @@ class MinionSystem extends System {
 		universe.setComponents(follower, startPosition, new Velocity(0, 0),
 			new PlayerFollower(type, minionData.maxSpeed * (1 + (Math.random() - 0.5) * Constants.MINION_MOVE_VARIANCE), minionData.acceleration,
 				minionData.radialLevel));
+
+		var bulletTargeting = BulletTargetingPriority.Closest;
+		if(minionData.bulletTargetingPriority != null)
+			bulletTargeting = minionData.bulletTargetingPriority;
+
 		if(minionData.bulletType != null)
-			universe.setComponents(follower, new BulletEmitter(minionData.bulletType, minionData.reloadSpeed));
+			universe.setComponents(follower, new BulletEmitter(minionData.bulletType, minionData.reloadSpeed,bulletTargeting));
 		if(minionData.minionSpawn != null){
 			universe.setComponents(follower, new MinionSpawner(minionData.minionSpawn,minionData.minionSpawnCost,minionData.minionSpawnFrequency,minionData.minionSpawnFrequencyStart));
 		}

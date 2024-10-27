@@ -29,7 +29,7 @@ enum abstract ColissionEffectType(Int) to Int {
 	var BombImbue;
 }
 
-enum abstract StatusEffectType(Int) to Int {
+enum abstract StatusEffectType(String) to String {
 	var Bomb;
 }
 
@@ -43,7 +43,7 @@ enum abstract BulletType(String) to String {
 	var Bomb;
 }
 
-enum abstract BulletTargetingPriority(Int) to Int {
+enum abstract BulletTargetingPriority(String) to String {
 	var Closest;
 	var Random;
 }
