@@ -52,6 +52,9 @@ class BulletSystem extends System {
 		var bulletSpeed = 1;
 		var decayDistance:Float = 0;
 		var sprite:Sprite = null;
+		var decayTime:Float=0;
+		var collideSize = 3;
+		var hpAmount = 1;
 		if (type == BulletType.Melee) {
 			bulletSpeed = 40;
 			decayDistance = 20;
@@ -64,6 +67,12 @@ class BulletSystem extends System {
 			bulletSpeed = 300;
 			decayDistance = 1000;
 			sprite = new Sprite(hxd.Res.circle_black_border_red,displayResources.scene, 5,5);
+		}else if(type == BulletType.Bomb){
+			sprite = new Sprite(hxd.Res.circle_orange,displayResources.scene, 100,100);
+			bulletSpeed = 0;
+			decayTime = 0.5;
+			collideSize=50;
+			hpAmount = 1000;
 		}
 
 		velocity *= bulletSpeed;
@@ -98,8 +107,14 @@ class BulletSystem extends System {
 			]);
 
 			universe.setComponents(bullet, position, new Velocity(vel.x, vel.y), sprite,
-				new Collidable(CollisionGroup.PlayerBullet, [CollisionGroup.Enemy], pendEffects, 3), new HealthContainer(1),
-				new DecayOnDistance(decayDistance), decomposeEffects);
+				new Collidable(CollisionGroup.PlayerBullet, [CollisionGroup.Enemy], pendEffects, collideSize), new HealthContainer(hpAmount),
+				decomposeEffects);
+			if(decayDistance != 0){
+				universe.setComponents(bullet,new DecayOnDistance(decayDistance));
+			}
+			if(decayTime != 0){
+				universe.setComponents(bullet,new DecayOnTime(decayTime));
+			}
 		}
 	}
 

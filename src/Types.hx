@@ -40,6 +40,7 @@ enum abstract BulletType(String) to String {
 	var Basic10;
 	var Melee;
 	var BombApplier;
+	var Bomb;
 }
 
 enum abstract BulletTargetingPriority(Int) to Int {

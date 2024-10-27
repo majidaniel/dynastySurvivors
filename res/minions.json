@@ -70,7 +70,7 @@
     },
     {
         "type": "BombImbuer",
-        "reloadSpeed": 0.5,
+        "reloadSpeed": 3.0,
         "maxSpeed": 175.0,
         "acceleration": 1000.0,
         "radialLevel": 2,

@@ -52,7 +52,7 @@ class EffectResolutionSystem extends System {
 								var explosionGenerator = universe.createEntity();
 								universe.setComponents(explosionGenerator, new Position(position.x, position.y));
                                 //TODO: replace basic10 with bomb
-                                universe.setComponents(explosionGenerator, new BulletEmitter(BulletType.Basic10,0.1,BulletTargetingPriority.Closest,1));
+                                universe.setComponents(explosionGenerator, new BulletEmitter(BulletType.Bomb,0.1,BulletTargetingPriority.Closest,1));
 							});
 						});
 					case _:
