@@ -225,6 +225,9 @@ class EnemySystem extends System {
 
 		var sprite;
 		var spriteSize:Int;
+
+		var pendingEffects = new PendingEffects(ColissionEffectType.Damage, enemyData.playerDamage);
+
 		switch (enemyType) {
 			case EnemyType.BasicFollowEnemy:
 				sprite = hxd.Res.circle_red;
@@ -241,12 +244,16 @@ class EnemySystem extends System {
 			case EnemyType.LargeSpawner:
 				sprite = hxd.Res.circle_red;
 				spriteSize = 50;
+			case EnemyType.StoreUnlock:
+					sprite = hxd.Res.diamond_blue_highlighted;
+					spriteSize = 20;
+					pendingEffects = new PendingEffects(ColissionEffectType.StoreReward,0);
 		}
 
 		universe.setComponents(enemy, newPosition, new Velocity(velocity.x, velocity.y), new Sprite(sprite, displayResources.scene, spriteSize, spriteSize),
 			new PlayerSeeker(PlayerSeekingType.Linear, enemyData.maxSpeed * (1 + (Math.random() - 0.5) * Constants.ENEMY_MAX_SPEED_VARIANCE),
 				enemyData.acceleration * (1 + (Math.random() - 0.5) * Constants.ENEMY_ACCELERATION_VARIANCE)),
-			new Collidable(enemyData.collisionGroup, [CollisionGroup.Player], new PendingEffects(ColissionEffectType.Damage, enemyData.playerDamage),
+			new Collidable(enemyData.collisionGroup, [CollisionGroup.Player], pendingEffects,
 				enemyData.collisionSize),
 			new HealthContainer(enemyData.hp), new DecomposeEffects(decomposeEffects), new ThreatGenerator(enemyData.threatPoints));
 

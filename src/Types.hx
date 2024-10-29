@@ -9,6 +9,7 @@ enum abstract GameAction(Int) to Int {
 	var Select1;
 	var Select2;
 	var Select3;
+	var TriggerStore;
 }
 
 enum abstract CollisionGroup(String) to String {
@@ -27,6 +28,7 @@ enum abstract ColissionEffectType(Int) to Int {
 	var FullConsume;
 	var Particles;
 	var BombImbue;
+	var StoreReward;
 }
 
 enum abstract StatusEffectType(String) to String {
@@ -66,10 +68,12 @@ enum abstract QueueType(String) to String {
 	var MinionDestructionQueue;
 	var HpEffectQueue;
 	var StatusEffectQueue;
+	var GameActionQueue;
 }
 
 enum abstract EnemyType(String) to String {
 	var XpGain;
+	var StoreUnlock;
 	var BasicFollowEnemy;
 	var LargeFollowEnemy;
 	var QuickSmallFollowEnemy;

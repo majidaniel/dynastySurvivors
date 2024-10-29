@@ -1,5 +1,6 @@
 package systems;
 
+import resources.Queues.GameActionRequest;
 import game.PlayerItem;
 import systems.XpSystem.XpConsumeRequest;
 import Types.QueueType;
@@ -36,6 +37,16 @@ class GameSystem extends System {
 					this.addMinion(state.baseMinionType, state.playerPosition.x, state.playerPosition.y, queues);
 				}));
 			}
+
+			var gameQueue = queues.getQueue(QueueType.GameActionQueue);
+			for(req in gameQueue){
+				var re:GameActionRequest = req;
+				if(re.action == GameAction.TriggerStore){
+					this.storeMode();
+				}
+			}
+			queues.clearQueue(QueueType.GameActionQueue);
+
 		});
 		handleUIInput();
 	}
@@ -47,7 +58,6 @@ class GameSystem extends System {
 					initTestScene();
 					state.uiMode = UIMode.InGame;
 					universe.getPhase('game-logic').enable();
-					storeMode();
 					return;
 				}
 			}
@@ -103,15 +113,26 @@ class GameSystem extends System {
 		});
 	}
 
+	var currentRewardTier = 0;
+	var rewardsArray = [
+		[
+			new PlayerItem(PlayerItemType.MinionBoost5),
+			new PlayerItem(PlayerItemType.TowerBuilder),
+			new PlayerItem(PlayerItemType.BombImbuer)
+		],
+		[
+			new PlayerItem(PlayerItemType.MinionBoost10),
+			new PlayerItem(PlayerItemType.TowerBuilder),
+			new PlayerItem(PlayerItemType.BombImbuer)
+		]
+	];
+
 	public function storeMode() {
 		setup(gameState, {
-			state.availableItems = [
-				new PlayerItem(PlayerItemType.MinionBoost5),
-				new PlayerItem(PlayerItemType.TowerBuilder),
-				new PlayerItem(PlayerItemType.BombImbuer)
-			];
+			state.availableItems = rewardsArray[currentRewardTier];
 			state.uiMode = UIMode.InStore;
 			universe.getPhase('game-logic').disable();
+			currentRewardTier ++;
 		});
 	}
 
@@ -128,6 +149,8 @@ class GameSystem extends System {
 	public function initTestScene() {
 		setup(gameState, {
 			final playerObject = universe.createEntity();
+			this.currentRewardTier = 0;
+			queues.queueGameAction(GameAction.TriggerStore);
 			var hp = new HealthContainer(100);
 			state.hp = hp;
 			state.currentThreat = 10;

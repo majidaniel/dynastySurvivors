@@ -32,6 +32,8 @@ class CollisionResolutionSystem extends System {
 						//queues.queue(QueueType.ParticleCreationQueue, req);
 					} else if (effect.type == ColissionEffectType.BombImbue) {
 						queues.queueStatusEffect(entity, new StatusEffect(StatusEffectType.Bomb));
+					} else if (effect.type == ColissionEffectType.StoreReward){
+						queues.queueGameAction(GameAction.TriggerStore);
 					}
 				}
 

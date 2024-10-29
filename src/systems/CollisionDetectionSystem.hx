@@ -36,6 +36,7 @@ class CollisionDetectionSystem extends System {
 			collisionMap.get(collider.collisionGroup).push(collider.shape);
 		});
 		var effectArray:Map<Entity, PendingEffects> = new Map<Entity, PendingEffects>();
+		var testedPairings:Map<String,Bool> = new Map();
 		iterate(collidables, {
 			for (collisionChecks in collider.collidesWith) {
 				if (collisionMap.exists(collisionChecks)) {
@@ -44,6 +45,9 @@ class CollisionDetectionSystem extends System {
 						for (x in res.iterator()) {
 							var colliderData1:ColliderData = x.shape1.data;
 							var colliderData2:ColliderData = x.shape2.data;
+
+							if(testedPairings.exists(colliderData1.entity + "_" + colliderData2.entity) || testedPairings.exists(colliderData2.entity + "_" + colliderData1.entity))
+								continue;
 
 							universe.setComponents(colliderData1.entity, new Collided(colliderData2.entity));
 							universe.setComponents(colliderData2.entity, new Collided(colliderData1.entity));
@@ -55,6 +59,8 @@ class CollisionDetectionSystem extends System {
 							if (!effectArray.exists(colliderData2.entity))
 								effectArray[colliderData2.entity] = new PendingEffects();
 							effectArray[colliderData2.entity].concatEffects(colliderData1.effects);
+
+							testedPairings[colliderData1.entity + "_" + colliderData2.entity] = true;
 						}
 					}
 				}

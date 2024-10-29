@@ -9,6 +9,7 @@ typedef MinionDeletionRequest = {var minionType:MinionType; var quantity:Int;}
 typedef HpEffectRequest = {public var entity:Entity; public var amount:Float;}
 typedef StatusEffectRequest = {public var entity:Entity; public var statusEffect:StatusEffect;}
 typedef ParticlesRequest = {var startPosition:Position; var quantity:Float; var velocity:Velocity; var emitMode:PartEmitMode;}
+typedef GameActionRequest = {var action:GameAction;}
 
 class Queues {
 	private var queues:Map<String, Array<Dynamic>> = new Map();
@@ -25,6 +26,7 @@ class Queues {
 		queues.set(QueueType.MinionDestructionQueue, new Array());
 		queues.set(QueueType.HpEffectQueue, new Array());
 		queues.set(QueueType.StatusEffectQueue, new Array());
+		queues.set(QueueType.GameActionQueue, new Array());
 	}
 
 	public function queue(type:QueueType, request:Dynamic) {
@@ -52,5 +54,10 @@ class Queues {
 	public function queueStatusEffect(entity:Entity, statusEffect:StatusEffect){
 		var req:StatusEffectRequest = {entity:entity, statusEffect:statusEffect};
 		this.queue(QueueType.StatusEffectQueue,req);
+	}
+
+	public function queueGameAction(action:GameAction){
+		var req:GameActionRequest = {action: action};
+		this.queue(QueueType.GameActionQueue, req);
 	}
 }

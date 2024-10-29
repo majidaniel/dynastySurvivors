@@ -51,9 +51,9 @@ class BulletSystem extends System {
 
 	public function addBullet(type:BulletType, startX:Float, startY:Float, velocity:Vector, displayResources:DisplayResources, queues:Queues, maximumShots:Float,shotsRemaining:Float):Int {
 		var bulletSpeed = 1;
-		var decayDistance:DecayOnDistance = null;
+		var decayDistance:Float = null;
 		var sprite:Sprite = null;
-		var decayTime:DecayOnTime = null;
+		var decayTime:Float = null;
 		var collideSize = 3;
 		var hpContainer = new HealthContainer(1);
 		var spreadFromOrigin:Float = 0;
@@ -61,21 +61,21 @@ class BulletSystem extends System {
 		// Bullet properties
 		if (type == BulletType.Melee) {
 			bulletSpeed = 40;
-			decayDistance = new DecayOnDistance(20);
+			decayDistance = 20;
 			sprite = new Sprite(hxd.Res.circle, displayResources.scene, 10, 10);
 		} else if (type == BulletType.Basic || type == BulletType.Basic3 || type == BulletType.Basic5 || type == BulletType.Basic10) {
 			bulletSpeed = 200;
-			decayDistance = new DecayOnDistance(200);
+			decayDistance = 200;
 			sprite = new Sprite(hxd.Res.circle, displayResources.scene, 3, 3);
 		} else if (type == BulletType.BombApplier) {
 			bulletSpeed = 300;
-			decayDistance = new DecayOnDistance(1000);
+			decayDistance = 1000;
 			sprite = new Sprite(hxd.Res.circle_black_border_red, displayResources.scene, 5, 5);
 		} else if (type == BulletType.Bomb) {
 			sprite = new Sprite(hxd.Res.circle_orange, displayResources.scene, 40, 40);
 			sprite.bitmap.alpha=0;
 			bulletSpeed = 0;
-			decayTime = new DecayOnTime(0.001, true);
+			decayTime = 0.001;
 			collideSize = 20;
 			hpContainer.hpAmount = 1000;
 			spreadFromOrigin = 50 + 2 * (maximumShots - shotsRemaining);
@@ -133,17 +133,17 @@ class BulletSystem extends System {
 		return 1;
 	}
 
-	private function generateBullet(position:Position, velocity:Velocity, collideSize:Float, sprite:Sprite, decayDistance:DecayOnDistance,
-			decayTime:DecayOnTime, pendingEffects:PendingEffects = null, hpContainer:HealthContainer, decomposeEffects:DecomposeEffects) {
+	private function generateBullet(position:Position, velocity:Velocity, collideSize:Float, sprite:Sprite, decayDistance:Float,
+			decayTime:Float, pendingEffects:PendingEffects = null, hpContainer:HealthContainer, decomposeEffects:DecomposeEffects) {
 		setup(emitters, {
 			var bullet = universe.createEntity();
 
-			universe.setComponents(bullet, position, velocity, sprite,
+			universe.setComponents(bullet, position, velocity, sprite.clone(),
 				new Collidable(CollisionGroup.PlayerBullet, [CollisionGroup.Enemy], pendingEffects, collideSize), hpContainer, decomposeEffects);
 			if (decayDistance != null)
-				universe.setComponents(bullet, decayDistance);
+				universe.setComponents(bullet, new DecayOnDistance(decayDistance));
 			if (decayTime != null)
-				universe.setComponents(bullet, decayTime);
+				universe.setComponents(bullet, new DecayOnTime(decayTime,true));
 		});
 	}
 
