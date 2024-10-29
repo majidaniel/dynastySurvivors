@@ -30,5 +30,7 @@ class GameState {
 
 	public var baseMinionType:MinionType = MinionType.BasicShooter;
 
+	public var currentRewardTier:Int = 0;
+
 	public function new() {}
 }

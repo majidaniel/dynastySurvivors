@@ -113,7 +113,6 @@ class GameSystem extends System {
 		});
 	}
 
-	var currentRewardTier = 0;
 	var rewardsArray = [
 		[
 			new PlayerItem(PlayerItemType.MinionBoost5),
@@ -129,10 +128,10 @@ class GameSystem extends System {
 
 	public function storeMode() {
 		setup(gameState, {
-			state.availableItems = rewardsArray[currentRewardTier];
+			state.availableItems = rewardsArray[state.currentRewardTier];
 			state.uiMode = UIMode.InStore;
 			universe.getPhase('game-logic').disable();
-			currentRewardTier ++;
+			state.currentRewardTier ++;
 		});
 	}
 
@@ -149,7 +148,7 @@ class GameSystem extends System {
 	public function initTestScene() {
 		setup(gameState, {
 			final playerObject = universe.createEntity();
-			this.currentRewardTier = 0;
+			state.currentRewardTier = 0;
 			queues.queueGameAction(GameAction.TriggerStore);
 			var hp = new HealthContainer(100);
 			state.hp = hp;
@@ -162,7 +161,7 @@ class GameSystem extends System {
 				new PlayerControlled(),
 				new Collidable(CollisionGroup.Player, [CollisionGroup.Enemy, CollisionGroup.Pickup],
 					new PendingEffects(ColissionEffectType.FullConsume, 10000), 3.5),
-				hp, new DecomposeEffects([this.endGame]));
+				hp, new DecomposeEffects([this.endGame]), new HpRegen(0.1,0.1));
 
 			for (i in 0...initialMinions)
 				addMinion(state.baseMinionType, state.playerPosition.x, state.playerPosition.y, queues);

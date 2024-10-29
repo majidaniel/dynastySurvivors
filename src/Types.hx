@@ -98,4 +98,5 @@ enum abstract PlayerItemType(String) to String {
 	var MinionBoost5;
 	var MinionBoost10;
 	var BombImbuer;
+	var TankArmor;
 }
