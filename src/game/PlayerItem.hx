@@ -2,7 +2,7 @@ package game;
 
 class PlayerItem {
 	public var type:PlayerItemType;
-	public var baseCost:Float = 0;
+	public var baseCost:Int = 0;
 	public var name:String;
 
 	public function new(type:PlayerItemType) {
@@ -20,6 +20,9 @@ class PlayerItem {
 			case PlayerItemType.BombImbuer:
 				this.baseCost = 0;
 				this.name = "Bomb imbuer";
+			case PlayerItemType.TankArmor:
+				this.baseCost = 5;
+				this.name = "Tank armor";
 			case _:
 				trace('Should probably code $type');
 		}

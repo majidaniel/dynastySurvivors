@@ -13,6 +13,7 @@ class GameState {
 	public var levelComplete:Bool = null;
 	public var hp:HealthContainer;
 	public var playerPosition:Position = null;
+	public var playerRegen:HpRegen = null;
 	public var debugMap:Map<String, String> = new Map();
 
 	public var xp:Float = 0;

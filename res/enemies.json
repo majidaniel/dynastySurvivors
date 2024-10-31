@@ -17,7 +17,7 @@
         "maxSpeed":35.0,
         "acceleration":15.0,
         "hp":200,
-        "playerDamage":10,
+        "playerDamage":20,
         "xpValue":0,
         "spawn":"XpGain",
         "collisionGroup":"Enemy",
