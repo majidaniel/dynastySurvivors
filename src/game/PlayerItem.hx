@@ -22,7 +22,7 @@ class PlayerItem {
 				this.name = "Bomb imbuer";
 			case PlayerItemType.TankArmor:
 				this.baseCost = 5;
-				this.name = "Tank armor";
+				this.name = "Fast regen";
 			case _:
 				trace('Should probably code $type');
 		}
