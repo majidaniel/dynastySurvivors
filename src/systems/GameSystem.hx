@@ -168,10 +168,13 @@ class GameSystem extends System {
 			state.playerPosition = playerPosition;
 			var hpRegen = new HpRegen(0.1,0.1);
 			state.playerRegen = hpRegen;
+			var pendingEffects = new PendingEffects(ColissionEffectType.FullConsume, 10000);
+			pendingEffects.addEffect(ColissionEffectType.Particles, 100);
+			
 			universe.setComponents(playerObject, playerPosition, new Velocity(0, 0), new Sprite(hxd.Res.circle_orange, displayResources.scene, 7, 7),
 				new PlayerControlled(),
 				new Collidable(CollisionGroup.Player, [CollisionGroup.Enemy, CollisionGroup.Pickup],
-					new PendingEffects(ColissionEffectType.FullConsume, 10000), 3.5),
+					pendingEffects, 3.5),
 				hp, new DecomposeEffects([this.endGame]), hpRegen);
 
 			for (i in 0...initialMinions)

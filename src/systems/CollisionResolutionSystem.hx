@@ -1,7 +1,5 @@
 package systems;
 
-import resources.Queues.ParticlesRequest;
-import differ.Collision;
 import ecs.System;
 import components.Collided;
 
@@ -28,8 +26,7 @@ class CollisionResolutionSystem extends System {
 					} else if (effect.type == ColissionEffectType.FullConsume) {
 						universe.setComponents(entity, new Decompose());
 					} else if (effect.type == ColissionEffectType.Particles) {
-						//var req:ParticlesRequest = {startPosition: new Position(position.x, position.y), quantity: 0};
-						//queues.queue(QueueType.ParticleCreationQueue, req);
+						queues.queueParticlesRequest(new Position(collided.collisionPoint.x, collided.collisionPoint.y), 10, null);
 					} else if (effect.type == ColissionEffectType.BombImbue) {
 						queues.queueStatusEffect(entity, new StatusEffect(StatusEffectType.Bomb));
 					} else if (effect.type == ColissionEffectType.StoreReward){

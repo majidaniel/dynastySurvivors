@@ -48,9 +48,11 @@ class CollisionDetectionSystem extends System {
 
 							if(testedPairings.exists(colliderData1.entity + "_" + colliderData2.entity) || testedPairings.exists(colliderData2.entity + "_" + colliderData1.entity))
 								continue;
-
-							universe.setComponents(colliderData1.entity, new Collided(colliderData2.entity));
-							universe.setComponents(colliderData2.entity, new Collided(colliderData1.entity));
+							
+							var collisionPoint:Position = new Position(x.separationX + x.shape1.x,x.separationY + x.shape1.y);
+							
+							universe.setComponents(colliderData1.entity, new Collided(colliderData2.entity,collisionPoint));
+							universe.setComponents(colliderData2.entity, new Collided(colliderData1.entity,collisionPoint));
 
 							if (!effectArray.exists(colliderData1.entity))
 								effectArray[colliderData1.entity] = new PendingEffects();
