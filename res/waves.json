@@ -47,7 +47,7 @@
             },
             {
                 "type":"QuickSmallFollowEnemy",
-                "probability":0.3
+                "probability":0.7
             }
         ]
     },

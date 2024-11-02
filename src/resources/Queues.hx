@@ -41,6 +41,11 @@ class Queues {
 		return queues.get(type);
 	}
 
+	public function queueParticlesRequest(startPosition:Position, quantity:Float, velocity:Velocity, emitMode:PartEmitMode = PartEmitMode.Point) {
+		var req:ParticlesRequest = {startPosition: new Position(startPosition.x,startPosition.y), quantity: quantity, velocity: velocity, emitMode: emitMode};
+		this.queue(QueueType.ParticleCreationQueue, req);
+	}
+
 	public function queueMinionDeletionRequest(minionType:MinionType, quantity:Int) {
 		var req:MinionDeletionRequest = {minionType: minionType, quantity: quantity};
 		this.queue(QueueType.MinionDestructionQueue, req);
@@ -51,12 +56,12 @@ class Queues {
 		this.queue(QueueType.HpEffectQueue, req);
 	}
 
-	public function queueStatusEffect(entity:Entity, statusEffect:StatusEffect){
-		var req:StatusEffectRequest = {entity:entity, statusEffect:statusEffect};
-		this.queue(QueueType.StatusEffectQueue,req);
+	public function queueStatusEffect(entity:Entity, statusEffect:StatusEffect) {
+		var req:StatusEffectRequest = {entity: entity, statusEffect: statusEffect};
+		this.queue(QueueType.StatusEffectQueue, req);
 	}
 
-	public function queueGameAction(action:GameAction){
+	public function queueGameAction(action:GameAction) {
 		var req:GameActionRequest = {action: action};
 		this.queue(QueueType.GameActionQueue, req);
 	}

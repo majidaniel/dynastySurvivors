@@ -13,6 +13,7 @@ class GameState {
 	public var levelComplete:Bool = null;
 	public var hp:HealthContainer;
 	public var playerPosition:Position = null;
+	public var playerRegen:HpRegen = null;
 	public var debugMap:Map<String, String> = new Map();
 
 	public var xp:Float = 0;
@@ -29,6 +30,8 @@ class GameState {
 	public var availableItems:Array<PlayerItem>;
 
 	public var baseMinionType:MinionType = MinionType.BasicShooter;
+
+	public var currentRewardTier:Int = 0;
 
 	public function new() {}
 }

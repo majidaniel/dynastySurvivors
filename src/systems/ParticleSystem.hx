@@ -43,6 +43,7 @@ class ParticleSystem extends System {
 				particleGroup.emitMode = req.emitMode;
 
 				//if (req.emitMode == PartEmitMode.Cone) {
+				if(req.velocity != null)
 					particleGroup.emitAngle = Math.atan2(req.velocity.vector.y * -1, req.velocity.vector.x * -1);
 				//}
 				particleGroup.emitDist = 0;

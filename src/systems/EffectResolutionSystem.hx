@@ -12,6 +12,13 @@ class EffectResolutionSystem extends System {
 		},
 		resources:{queues:Queues}
 	};
+	@:fullFamily var regens:{
+		requires:{
+			healthContainer:HealthContainer,
+			hpRegen:HpRegen
+		},
+		resources:{}
+	};
 	@:fullFamily var decomposers:{
 		requires:{
 			decomposeEffects:DecomposeEffects
@@ -62,7 +69,8 @@ class EffectResolutionSystem extends System {
 							var blastSize:Int = 1;
 							fetch(healthContainers, ent, {
 								if (healthContainer != null && healthContainer.initialHpAmount > 1) {
-									blastSize = Math.ceil(Math.log(healthContainer.initialHpAmount) * Math.log(Math.log(healthContainer.initialHpAmount)) * 2  * (1 + Math.random() * 0.5));
+									blastSize = Math.ceil(Math.log(healthContainer.initialHpAmount) * Math.log(Math.log(healthContainer.initialHpAmount)) * 2 * (1
+										+ Math.random() * 0.5));
 								}
 							});
 							decomposeEffect.addEffect(function() {
@@ -70,6 +78,11 @@ class EffectResolutionSystem extends System {
 								universe.setComponents(explosionGenerator, new Position(position.x, position.y));
 								universe.setComponents(explosionGenerator,
 									new BulletEmitter(BulletType.Bomb, 0.05, BulletTargetingPriority.Closest, blastSize));
+							});
+							// Alter visuals
+							fetch(sprites, ent, {
+								//sprite.graphics.filter = new Glow(0xffdf27, 1, 3,1,10,true);
+								sprite.bitmap.filter = new Glow(0xffdf27, 1, 3);
 							});
 						});
 					case _:
@@ -83,11 +96,6 @@ class EffectResolutionSystem extends System {
 				});
 
 				universe.setComponents(ent, decomposeEffect);
-
-				// Alter visuals
-				fetch(sprites, ent, {
-					sprite.bitmap.filter = new Glow(0xffdf27, 1, 3);
-				});
 			}
 			queues.clearQueue(QueueType.StatusEffectQueue);
 		});
@@ -97,6 +105,21 @@ class EffectResolutionSystem extends System {
 				alphaDecay.currentTime += _dt;
 				sprite.bitmap.alpha = Math.max(0, 1 - alphaDecay.currentTime / alphaDecay.timeToDecay);
 			});
+		});
+
+		iterate(regens, entity -> {
+			hpRegen.timeToNextRegen -= _dt;
+			if (hpRegen.timeToNextRegen <= 0) {
+				healthContainer.hpAmount += hpRegen.regenAmount;
+				if (healthContainer.hpAmount > healthContainer.maxAmount)
+					healthContainer.hpAmount = healthContainer.maxAmount;
+				hpRegen.timeToNextRegen = hpRegen.regenFrequency;
+				if (hpRegen.regenTotal != -1) {
+					hpRegen.regenTotal--;
+					if (hpRegen.regenTotal <= 0)
+						universe.removeComponents(entity, hpRegen);
+				}
+			}
 		});
 	}
 }

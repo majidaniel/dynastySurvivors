@@ -107,16 +107,24 @@ class GameSystem extends System {
 					this.addMinion(MinionType.TowerBuilder, state.playerPosition.x, state.playerPosition.y, queues);
 				case PlayerItemType.BombImbuer:
 					this.addMinion(MinionType.BombImbuer, state.playerPosition.x, state.playerPosition.y, queues);
+				case PlayerItemType.TankArmor:
+					state.playerRegen.regenAmount *= 5;
+					//state.playerRegen.regenFrequency /= 2;
+					state.hp.maxAmount *= 5;
+					state.hp.hpAmount=state.hp.maxAmount;
 				case _:
 					trace('Should probably code ' + reward.type);
+			}
+			if(reward.baseCost > 0){
+				queues.queueMinionDeletionRequest(state.baseMinionType,reward.baseCost);
 			}
 		});
 	}
 
-	var currentRewardTier = 0;
 	var rewardsArray = [
 		[
-			new PlayerItem(PlayerItemType.MinionBoost5),
+			//new PlayerItem(PlayerItemType.MinionBoost5),
+			new PlayerItem(PlayerItemType.TankArmor),
 			new PlayerItem(PlayerItemType.TowerBuilder),
 			new PlayerItem(PlayerItemType.BombImbuer)
 		],
@@ -129,10 +137,10 @@ class GameSystem extends System {
 
 	public function storeMode() {
 		setup(gameState, {
-			state.availableItems = rewardsArray[currentRewardTier];
+			state.availableItems = rewardsArray[state.currentRewardTier];
 			state.uiMode = UIMode.InStore;
 			universe.getPhase('game-logic').disable();
-			currentRewardTier ++;
+			state.currentRewardTier ++;
 		});
 	}
 
@@ -149,7 +157,7 @@ class GameSystem extends System {
 	public function initTestScene() {
 		setup(gameState, {
 			final playerObject = universe.createEntity();
-			this.currentRewardTier = 0;
+			state.currentRewardTier = 0;
 			queues.queueGameAction(GameAction.TriggerStore);
 			var hp = new HealthContainer(100);
 			state.hp = hp;
@@ -158,11 +166,16 @@ class GameSystem extends System {
 			state.ticksElapsed = 0;
 			final playerPosition = new Position(Constants.screenSpaceWidth / 2, screenSpaceHeight / 2);
 			state.playerPosition = playerPosition;
+			var hpRegen = new HpRegen(0.1,0.1);
+			state.playerRegen = hpRegen;
+			var pendingEffects = new PendingEffects(ColissionEffectType.FullConsume, 10000);
+			pendingEffects.addEffect(ColissionEffectType.Particles, 100);
+			
 			universe.setComponents(playerObject, playerPosition, new Velocity(0, 0), new Sprite(hxd.Res.circle_orange, displayResources.scene, 7, 7),
 				new PlayerControlled(),
 				new Collidable(CollisionGroup.Player, [CollisionGroup.Enemy, CollisionGroup.Pickup],
-					new PendingEffects(ColissionEffectType.FullConsume, 10000), 3.5),
-				hp, new DecomposeEffects([this.endGame]));
+					pendingEffects, 3.5),
+				hp, new DecomposeEffects([this.endGame]), hpRegen);
 
 			for (i in 0...initialMinions)
 				addMinion(state.baseMinionType, state.playerPosition.x, state.playerPosition.y, queues);
