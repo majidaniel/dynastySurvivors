@@ -6,7 +6,7 @@
         "hp":10,
         "playerDamage":10,
         "xpValue":0,
-        "spawn":"StoreUnlock",
+        "spawn":"XpGain",
         "collisionGroup":"Enemy",
         "collisionSize":5,
         "spawnOdds":0.1,
